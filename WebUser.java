@@ -21,8 +21,7 @@ public class WebUser {
         this.state = state;
         this.shoppingCart = null;
 
-        boolean customerWasAdded = addCustomer(customer);
-        if(!customerWasAdded){
+        if(!addCustomer(customer)){
             throw new RuntimeException("Customer already exist");
         }
     }
