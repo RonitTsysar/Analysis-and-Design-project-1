@@ -7,7 +7,7 @@ public class Customer {
     private WebUser webUser;
     private Account account;
 
-    public Customer(String id, Address address, String phone, String email,WebUser webUser,String billingAddress) {
+    public Customer(String id, Address address, String phone, String email,WebUser webUser) {
         //customerId,customerAddress,customerPhone,customerEmail,webuser
         this.id = id;
         this.address = address;

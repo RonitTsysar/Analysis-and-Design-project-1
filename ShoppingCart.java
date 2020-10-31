@@ -11,9 +11,9 @@ public class ShoppingCart {
         this.webUser=webUser;
 
         boolean webUserAdded = addWebUser(webUser);
-        if(!webUserAdded){
-            throw new RuntimeException("WebUser already exist");
-        }
+//        if(!webUserAdded){
+//            throw new RuntimeException("WebUser already exist");
+//        }
     }
 
     private boolean addWebUser(WebUser webUser) {
