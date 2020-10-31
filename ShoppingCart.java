@@ -1,18 +1,14 @@
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class ShoppingCart {
     private Date created;
-
+    private Account account;
     private WebUser webUser;
 
-    private List<LineItem> lineItems;
-
-    public ShoppingCart(Date created, WebUser webUser) {
-        this.created = created;
-
-        this.lineItems = new ArrayList<>();
+    public ShoppingCart(Account account,WebUser webUser) {
+//        this.created = Date.now();
+        this.account=account;
+        this.webUser=webUser;
 
         boolean webUserAdded = addWebUser(webUser);
         if(!webUserAdded){

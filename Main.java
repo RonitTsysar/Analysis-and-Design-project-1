@@ -89,31 +89,38 @@ public class Main {
                         break;
     
                     case "Remove":
-                        System.out.println(" Remove WebUser ");
+                        System.out.println("Remove WebUser");
+                        //TODO: removeWebUser()
                         break;
                     
                     case "Login":
-                        System.out.println(" Login WebUser ");
+                        System.out.println("Login WebUser");
+                        //TODO: loginWebUser()
                         break;
                     
                     case "Logout":
                         System.out.println(" Logout WebUser ");
+                        //TODO: logoutWebUser()
                         break;
                                
                     case "Make":
                         System.out.println(" Make order ");
+                        //TODO: makeOrder()
                         break;
     
                     case "Display":
                         System.out.println(" Display order ");
+                        //TODO: displayOrder()
                         break;
                     
                     case "Link":
                         System.out.println(" Link Product ");
+                        //TODO: linkProduct(String productName)
                         break;
     
                     case "Delete":
                         System.out.println(" Delete Product ");
+
                         break;
     
                     case "ShowAllObjects":

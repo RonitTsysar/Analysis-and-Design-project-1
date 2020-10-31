@@ -15,15 +15,9 @@ public class WebUser {
     private ShoppingCart shoppingCart;
 
 
-    public WebUser(String login_id, String password, UserState state, Customer customer) {
+    public WebUser(String login_id) { // constructor
         this.login_id = login_id;
-        this.password = password;
-        this.state = state;
-        this.shoppingCart = null;
 
-        if(!addCustomer(customer)){
-            throw new RuntimeException("Customer already exist");
-        }
     }
 
     public String getLogin_id() {

@@ -4,16 +4,23 @@ public class Customer {
     private Address address;
     private String phone;
     private String email;
-
     private WebUser webUser;
+    private Account account;
 
-    public Customer(String id, Address address, String phone, String email) {
+    public Customer(String id, Address address, String phone, String email,WebUser webUser,String billingAddress) {
+        //customerId,customerAddress,customerPhone,customerEmail,webuser
         this.id = id;
         this.address = address;
         this.phone = phone;
         this.email = email;
+        this.webUser = webUser;
+    }
 
-        this.webUser = null;
+    public void setAccount(Account account)
+    {
+        // TODO: create check if account already connected !!!!!***********
+        this.account=account;
+
     }
 
     public String getId() {
