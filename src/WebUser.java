@@ -15,9 +15,8 @@ public class WebUser {
     private ShoppingCart shoppingCart;
 
 
-    public WebUser(String login_id) { // constructor
+    public WebUser(String login_id) {
         this.login_id = login_id;
-
     }
 
     public String getLogin_id() {
