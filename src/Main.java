@@ -15,7 +15,6 @@ public class Main {
     public static Customer addWebUser(String login_id){
 
         WebUser webUser = new WebUser(login_id);
-
         System.out.println("Please enter password:");
         String password = scanner.nextLine();
         
