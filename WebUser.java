@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.util.List;
 
 public class WebUser {
 
@@ -49,6 +50,16 @@ public class WebUser {
         scanner.close();
 
         return (new Customer(id, address, phone, email, this));
+    }
+
+    public void displayOwnedItems() {
+        List<Order> orders = this.customer.getAccount().getOrders();
+        for (Order order : orders) {
+            List<LineItem> orderLineItems = order.getLineItems();
+            for (LineItem orderLineItem : orderLineItems) {
+                System.out.println(orderLineItem);
+            }
+        }
     }
 
     /*public String getLogin_id() {

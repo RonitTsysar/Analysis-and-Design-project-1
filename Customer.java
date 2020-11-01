@@ -10,7 +10,8 @@ public class Customer {
     private Account account;
 
     public WebUser getWebUser() {return this.webUser;}
-    
+    public Account getAccount() {return this.account;}
+
     public Customer(String id, Address address, String phone, String email, WebUser webUser) {
         
         this.id = id;
@@ -35,7 +36,6 @@ public class Customer {
         else
             return(new Account(this.id, billingAddress, this));
     }
-
     /*public void setAccount(Account account)
     {
         // TODO: create check if account already connected !!!!!***********

@@ -51,4 +51,12 @@ public class Product {
             throw new RuntimeException("This product is belong to another account");
         }
     }
+
+    @Override
+    public String toString() {
+        return "Product: " +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

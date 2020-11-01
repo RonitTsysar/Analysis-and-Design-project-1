@@ -18,7 +18,6 @@ public class Order {
     private OrderStatus status;
     private float total;
 
-    private Account account;
     private List<Payment> payments;
     private List<LineItem> lineItems;
 
@@ -32,8 +31,11 @@ public class Order {
         this.status = status;
         this.total = total;
 
-//        this.account = account;
         this.payments = new ArrayList<>();
         this.lineItems = new ArrayList<>();
+    }
+
+    public List<LineItem> getLineItems() {
+        return lineItems;
     }
 }
