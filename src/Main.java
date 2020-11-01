@@ -1,14 +1,12 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Scanner;
+import java.util.*;
 
 
 public class Main {
 
     static Scanner scanner = new Scanner(System.in);
     static ArrayList<Customer> customersList = new ArrayList<Customer>();
-    static ArrayList<Supplier> suppliersList = new ArrayList<Supplier>();
-    static ArrayList<Product> productsList = new ArrayList<Product>();
+    static Map<String, Supplier> suppliersList = new HashMap<>();
+    static Map<String, Product> productsList = new HashMap<>();
 
 
     public static Customer addWebUser(String login_id){
@@ -37,8 +35,8 @@ public class Main {
         webUser.addCustomer(customer);// make connection between (webuser -> customer)
         Account account = new Account(login_id, billingAddress, customer);// sending customer arg to make back connection inside the ctor ( Account -> customer)
         customer.setAccount(account); // make connection between (customer -> account)
-        ShoppingCart shoppingCart = new ShoppingCart(account,webUser); // create shopingCart &  make connection between (shopingCart -> account&webuser)
-        account.setShoppingCart(shoppingCart); // make connection between (account -> shopingCart)
+        ShoppingCart shoppingCart = new ShoppingCart(); // create shopingCart &  make connection between (shopingCart -> account&webuser)
+        account.setShoppingCart(shoppingCart); // make connection between (account -> shopפingCart)
         webUser.addShoppingCart(shoppingCart);//make connection between (webuser -> shoppingCart)
         webUser.setPassword(password);
         //TODO: add webUser State;
@@ -48,13 +46,13 @@ public class Main {
     public static void SystemStartUp()
     {
         Supplier mosheSupplier = new Supplier("123", "Moshe");
-        suppliersList.add(mosheSupplier);
+        suppliersList.put(mosheSupplier.getId(), mosheSupplier);
 
         Product bambaProduct = new Product("Bamba", "Bamba", mosheSupplier);
-        productsList.add(bambaProduct);
+        productsList.put(bambaProduct.getId(), bambaProduct);
 
         Product ramenProduct = new Product("Ramen", "Ramen", mosheSupplier);
-        productsList.add(ramenProduct);
+        productsList.put(ramenProduct.getId(), ramenProduct);
 
         WebUser daniWU = new WebUser("Dani");
         daniWU.setPassword("Dani123");
@@ -62,7 +60,7 @@ public class Main {
         daniWU.setCustomer(daniCustomer);
         Account daniAccount = new Account("Dani",null,daniCustomer);
         daniCustomer.setAccount(daniAccount);
-        ShoppingCart daniShoppingCart = new ShoppingCart(daniAccount,daniWU);
+        ShoppingCart daniShoppingCart = new ShoppingCart();
         daniAccount.setShoppingCart(daniShoppingCart);
         daniWU.setShoppingCart(daniShoppingCart);
         //TODO: add webUser State;
@@ -75,7 +73,7 @@ public class Main {
         danaWU.setCustomer(danaCustomer);
         PremiumAccount danaAccount = new PremiumAccount("Dana",null,danaCustomer);
         danaCustomer.setAccount(danaAccount);
-        ShoppingCart danaShoppingCart = new ShoppingCart(danaAccount,danaWU);
+        ShoppingCart danaShoppingCart = new ShoppingCart();
         danaAccount.setShoppingCart(danaShoppingCart);
         danaWU.setShoppingCart(danaShoppingCart);
         //TODO: add webUser State;
@@ -109,8 +107,10 @@ public class Main {
                         if (type.equals("WebUser")) {
                             customersList.add(addWebUser(arg));
                         }
-                        else if (type.equals("Product"))
+                        else if (type.equals("Product")){
                             System.out.println("Add Product");
+                            addProduct();
+                        }
                         break;
     
                     case "Remove":
@@ -139,6 +139,7 @@ public class Main {
     
                     case "Delete":
                         System.out.println(" Delete Product ");
+                        deleteProduct(arg);
                         break;
     
                     case "ShowAllObjects":
@@ -154,5 +155,55 @@ public class Main {
         catch(Exception e) {
             scanner.close();
         }
+    }
+
+    private static void deleteProduct(String productName){
+        ArrayList<Product> prods = (ArrayList<Product>) productsList.values();
+        for (Product prod : prods) {
+            if(prod.getName().equals(productName))
+            {
+                String prodId = prod.getId();
+                prod.getSupplier().getProducts().remove(prod);//delete product from supplier product list
+                productsList.remove(prodId);
+            }
+        }
+
+    }
+
+    private static void addProduct() {
+        System.out.println("Please enter product id:");
+        String productId = scanner.nextLine();
+        while(productExists(productId)){
+            System.out.println("Product id already exists. enter another id:");
+            productId = scanner.nextLine();
+        }
+
+        System.out.println("Please enter supplier name:");
+        Supplier supplier = checkSupplier(scanner.nextLine());
+
+        System.out.println("please enter product name:");
+        String productName = scanner.nextLine();
+        Product product = new Product(productId, productName, supplier);
+        supplier.getProducts().add(product);
+
+        productsList.put(productId, product);
+    }
+
+    private static boolean productExists(String productId) {
+        return productsList.containsKey(productId);
+    }
+
+    private static Supplier checkSupplier(String supplierId) {
+        if(suppliersList.containsKey(supplierId))
+            return suppliersList.get(supplierId);
+
+        System.out.println("Please enter supplier's name:");
+            String supplierName = scanner.nextLine();
+
+        Supplier supplier = new Supplier(supplierId, supplierName);
+        suppliersList.put(supplierId, supplier);
+
+        return supplier;
+
     }
 }

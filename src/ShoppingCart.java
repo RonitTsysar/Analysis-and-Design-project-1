@@ -1,27 +1,28 @@
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class ShoppingCart {
     private Date created;
-    private Account account;
     private WebUser webUser;
 
-    public ShoppingCart(Account account,WebUser webUser) {
-//        this.created = Date.now();
-        this.account=account;
-        this.webUser=webUser;
+    private List<LineItem> lineItemList;
 
-        boolean webUserAdded = addWebUser(webUser);
-//        if(!webUserAdded){
-//            throw new RuntimeException("WebUser already exist");
-//        }
+    public ShoppingCart() {
+         this.created = new Date();
+         this.lineItemList = new ArrayList<>();
+         this.webUser = null;
     }
 
-    private boolean addWebUser(WebUser webUser) {
-        if(this.webUser == null){
-            setWebUser(webUser);
-            return true;
+    private void addWebUser(WebUser webUser){
+        if(webUser == null){
+            throw new RuntimeException("webUser can't be null");
         }
-        return false;
+
+        if(this.webUser != null){
+            throw new RuntimeException("This shopping cart already has a webUser");
+        }
+        this.webUser = webUser;
     }
 
     public Date getCreated() {
@@ -38,5 +39,13 @@ public class ShoppingCart {
 
     public void setWebUser(WebUser webUser) {
         this.webUser = webUser;
+    }
+
+    public List<LineItem> getLineItemList() {
+        return lineItemList;
+    }
+
+    public void setLineItemList(List<LineItem> lineItemList) {
+        this.lineItemList = lineItemList;
     }
 }

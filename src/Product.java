@@ -1,4 +1,3 @@
-import java.util.function.Supplier;
 
 public class Product {
     private String id;
