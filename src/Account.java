@@ -28,4 +28,8 @@ public class Account {
     public void setShoppingCart(ShoppingCart shoppingCart){
         this.shoppingCart=shoppingCart;
     }
+
+    public List<Order> getOrders() {
+        return this.orders;
+    }
 }

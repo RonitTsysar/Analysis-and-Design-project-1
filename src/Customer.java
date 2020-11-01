@@ -76,4 +76,8 @@ public class Customer {
     public void removeWebUser(){
         this.webUser = null;
     }
+
+    public Account getAccount() {
+        return this.account;
+    }
 }

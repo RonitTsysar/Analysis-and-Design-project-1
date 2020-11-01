@@ -13,4 +13,13 @@ public class LineItem {
         this.order = order;
         this.shoppingCart = shoppingCart;
     }
+
+    @Override
+    public String toString() {
+        return "LineItem:" +
+                "quantity=" + quantity +
+                ", price=" + price +
+                ", product=" + product +
+                '}';
+    }
 }

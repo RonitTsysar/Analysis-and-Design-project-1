@@ -1,4 +1,8 @@
+import java.util.List;
+
 public class WebUser {
+
+
 
     enum UserState {
         New,
@@ -77,5 +81,15 @@ public class WebUser {
             return true;
         }
         return false;
+    }
+
+    public void displayOwnedItems() {
+        List<Order> orders = this.customer.getAccount().getOrders();
+        for (Order order : orders) {
+            List<LineItem> orderLineItems = order.getLineItems();
+            for (LineItem orderLineItem : orderLineItems) {
+                System.out.println(orderLineItem);
+            }
+        }
     }
 }
