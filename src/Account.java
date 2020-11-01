@@ -1,5 +1,3 @@
-package src;
-
 import java.util.Date;
 import java.util.List;
 
@@ -17,7 +15,7 @@ public class Account {
     private List<Payment> payments;
     private List<Order> orders;
 
-    public Account(String accountId,String billingAddress,Customer customer){
+    public Account(String accountId, String billingAddress, Customer customer){
         this.id=accountId;
         this.billing_address=billingAddress;
         this.is_closed=false;
