@@ -6,42 +6,17 @@ import java.util.Scanner;
 public class Main {
 
     static Scanner scanner = new Scanner(System.in);
-    static ArrayList<Customer> customersList = new ArrayList<Customer>();
+    static ArrayList<WebUser> webUsersList = new ArrayList<WebUser>();
     static ArrayList<Supplier> suppliersList = new ArrayList<Supplier>();
     static ArrayList<Product> productsList = new ArrayList<Product>();
 
 
-    public static Customer addWebUser(String login_id){
+    public static WebUser addWebUser(String login_id){
 
-        WebUser webUser = new WebUser(login_id);
-        System.out.println("Please enter password:");
+        System.out.println("Please enter password: ");
         String password = scanner.nextLine();
-        
-        System.out.println("Please enter customer id:");
-        String customerId = scanner.nextLine();
-        
-        System.out.println("Please enter customer address:");
-        Address customerAddress = new Address(scanner.nextLine());
 
-        System.out.println("Please enter customer phone:");
-        String customerPhone= scanner.nextLine();
-
-        System.out.println("Please enter customer email:");
-        String customerEmail = scanner.nextLine();
-
-        System.out.println("Please enter billing address:");
-        String billingAddress = scanner.nextLine();
-
-        Customer customer = new Customer(customerId, customerAddress, customerPhone, customerEmail, webUser); // make connection between (customer -> webuser)
-        webUser.addCustomer(customer);// make connection between (webuser -> customer)
-        Account account = new Account(login_id, billingAddress, customer);// sending customer arg to make back connection inside the ctor ( Account -> customer)
-        customer.setAccount(account); // make connection between (customer -> account)
-        ShoppingCart shoppingCart = new ShoppingCart(account,webUser); // create shopingCart &  make connection between (shopingCart -> account&webuser)
-        account.setShoppingCart(shoppingCart); // make connection between (account -> shopingCart)
-        webUser.addShoppingCart(shoppingCart);//make connection between (webuser -> shoppingCart)
-        webUser.setPassword(password);
-        //TODO: add webUser State;
-        return customer;
+        return(new WebUser(login_id, password));
     }
 
     public static void SystemStartUp()
@@ -106,7 +81,7 @@ public class Main {
                 switch (command) {
                     case "Add":
                         if (type.equals("WebUser")) {
-                            customersList.add(addWebUser(arg));
+                            webUsersList.add(addWebUser(arg));
                         }
                         else if (type.equals("Product"))
                             System.out.println("Add Product");

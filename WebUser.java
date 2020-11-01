@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 public class WebUser {
 
     enum UserState {
@@ -14,12 +16,42 @@ public class WebUser {
     private Customer customer;
     private ShoppingCart shoppingCart;
 
-
-    public WebUser(String login_id) {
-        this.login_id = login_id;
+	public void setShoppingCart(ShoppingCart shoppingCart) throws Exception {
+        if(shoppingCart != null)
+            throw new RuntimeException();
+        this.shoppingCart = shoppingCart; 
     }
 
-    public String getLogin_id() {
+    public WebUser(String login_id ,String password) {
+        this.login_id = login_id;
+        this.password = password;
+        this.state = UserState.New;
+        this.customer = createCusomer();
+    }
+
+    private Customer createCusomer() {
+        
+        shoppingCart = null;
+
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Please enter id: ");
+        String id = scanner.nextLine();
+
+        System.out.println("Please enter address: ");
+        Address address = new Address(scanner.nextLine());
+
+        System.out.println("Please enter phone: ");
+        String phone= scanner.nextLine();
+
+        System.out.println("Please enter email: ");
+        String email = scanner.nextLine();
+        scanner.close();
+
+        return (new Customer(id, address, phone, email, this));
+    }
+
+    /*public String getLogin_id() {
         return login_id;
     }
 
@@ -77,5 +109,5 @@ public class WebUser {
             return true;
         }
         return false;
-    }
+    }*/
 }

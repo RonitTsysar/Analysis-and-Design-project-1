@@ -1,4 +1,4 @@
-
+import java.util.Scanner;
 
 public class Customer {
 
@@ -9,16 +9,34 @@ public class Customer {
     private WebUser webUser;
     private Account account;
 
+    public WebUser getWebUser() {return this.webUser;}
+    
     public Customer(String id, Address address, String phone, String email, WebUser webUser) {
-        //customerId,customerAddress,customerPhone,customerEmail,webuser
+        
         this.id = id;
         this.address = address;
         this.phone = phone;
         this.email = email;
         this.webUser = webUser;
+
+        account = createAccuount();
     }
 
-    public void setAccount(Account account)
+    private Account createAccuount() {
+
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Please enter billing address:");
+        String billingAddress = scanner.nextLine();
+        scanner.close();
+        
+        System.out.println("Are you a Premium Account? Please enter yes/no:");
+        if(scanner.nextLine().equals("yes"))
+            return(new PremiumAccount(this.id, billingAddress, this));
+        else
+            return(new Account(this.id, billingAddress, this));
+    }
+
+    /*public void setAccount(Account account)
     {
         // TODO: create check if account already connected !!!!!***********
         this.account=account;
@@ -75,5 +93,5 @@ public class Customer {
 
     public void removeWebUser(){
         this.webUser = null;
-    }
+    }*/
 }
