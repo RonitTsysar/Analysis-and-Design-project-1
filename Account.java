@@ -15,14 +15,19 @@ public class Account {
     private List<Payment> payments;
     private List<Order> orders;
 
-    public Account(String accountId, String billingAddress, Customer customer){
-        this.id=accountId;
-        this.billing_address=billingAddress;
-        this.is_closed=false;
-//        this.open = LocalDateTime.now();
-        this.closed=null;
-        this.balance=0;
-        this.customer=customer;
+    public Account(String id, String billingAddress, Customer customer) throws Exception {
+        
+        this.id = id;
+        this.billing_address = billingAddress;
+        this.is_closed = false;
+        //TODO - Date open
+        //       Date closed
+        //       balance
+        this.customer = customer;
+        this.shoppingCart = new ShoppingCart(customer.getWebUser());
+        
+        payments = new ArrayList<Payment>();
+        orders = new ArrayList<Order>();
     }
 
     public void setShoppingCart(ShoppingCart shoppingCart){

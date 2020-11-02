@@ -9,6 +9,7 @@ public class Main {
     static Map<String, Product> productsList = new HashMap<>();
 
 
+
     public static WebUser addWebUser(String login_id){
 
         System.out.println("Please enter password: ");
@@ -57,6 +58,8 @@ public class Main {
         bambaProduct.setPremiumAccount(danaAccount);
     }
 
+
+
     public static void main(String[] args) 
     {
         SystemStartUp();
@@ -100,11 +103,12 @@ public class Main {
                         break;
                                
                     case "Make":
-                        System.out.println(" Make order ");
+                        System.out.println("Make order");
+                        //todo: makeOrder()
                         break;
     
                     case "Display":
-                        System.out.println(" Display order ");
+                        System.out.println("Display order");
                         break;
                     
                     case "Link":
