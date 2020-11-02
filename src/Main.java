@@ -6,7 +6,8 @@ public class Main {
     static Scanner scanner = new Scanner(System.in);
     static ArrayList<Customer> customersList = new ArrayList<Customer>();
     static Map<String, Supplier> suppliersList = new HashMap<>();
-    static Map<String, Product> productsList = new HashMap<>();
+    static Map<String, Product> productsList = new HashMap<>(); // key: productName , value: Product
+    static Account activeAccount;
 
 
 
@@ -136,40 +137,48 @@ public class Main {
         }
     }
 
-    private static void deleteProduct(String productName){
-        ArrayList<Product> prods = (ArrayList<Product>) productsList.values();
-        for (Product prod : prods) {
-            if(prod.getName().equals(productName))
-            {
-                String prodId = prod.getId();
-                prod.getSupplier().getProducts().remove(prod);//delete product from supplier product list
-                productsList.remove(prodId);
-            }
+    private static void linkProduct(String productName){
+        // written by lior
+        if(activeAccount instanceof PremiumAccount){
+            ((PremiumAccount) activeAccount).getProductsList().add(productsList.get(productName));
         }
 
     }
+
+    private static void deleteProduct(String productName){
+        //changed by Lior
+        Product prod = productsList.get(productName);
+        prod.getSupplier().getProducts().remove(prod);//delete product from supplier product list
+        productsList.remove(productName);
+        //when removing product - delete all lineItems connected to him:
+        List lineItemsOfProduct=prod.getLineItemsList();
+        for (Object lineItem : lineItemsOfProduct) {
+            ((LineItem)lineItem).getShoppingCart().getLineItemList().remove(lineItem);
+            ((LineItem)lineItem).getOrder().getLineItems().remove(lineItem);
+        }
+        if(prod.getPremiumAccount() != null)
+            prod.getPremiumAccount().getProductsList().remove(prod);
+    }
+
 
     private static void addProduct() {
-        System.out.println("Please enter product id:");
-        String productId = scanner.nextLine();
-        while(productExists(productId)){
-            System.out.println("Product id already exists. enter another id:");
-            productId = scanner.nextLine();
+        System.out.println("Please enter product name:");
+        String productName = scanner.nextLine();
+        while(productExists(productName)){
+            System.out.println("Product name already exists. enter another name:");
+            productName = scanner.nextLine();
         }
-
         System.out.println("Please enter supplier name:");
         Supplier supplier = checkSupplier(scanner.nextLine());
-
-        System.out.println("please enter product name:");
-        String productName = scanner.nextLine();
+        System.out.println("please enter product id:");
+        String productId = scanner.nextLine();
         Product product = new Product(productId, productName, supplier);
         supplier.getProducts().add(product);
-
-        productsList.put(productId, product);
+        productsList.put(productName, product);
     }
 
-    private static boolean productExists(String productId) {
-        return productsList.containsKey(productId);
+    private static boolean productExists(String productName) {
+        return productsList.containsKey(productName);
     }
 
     private static Supplier checkSupplier(String supplierId) {

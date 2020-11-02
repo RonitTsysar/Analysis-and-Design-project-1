@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class PremiumAccount extends Account {
@@ -9,6 +10,11 @@ public class PremiumAccount extends Account {
         super(id, billingAddress, customer);
         //String accountId,String billingAddress,Customer customer
         this.products = new ArrayList<>();
+    }
+
+    public Collection<Product> getProductsList() {
+        //added by Lior
+        return this.products;
     }
 
     /*public List<Product> getProducts() {

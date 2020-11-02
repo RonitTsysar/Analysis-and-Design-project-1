@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.List;
 
 public class Product {
     private String id;
@@ -5,6 +7,9 @@ public class Product {
 
     private Supplier supplier;
     private PremiumAccount premiumAccount;
+    private List<LineItem> lineItemsList;
+
+
 
     public Product(String id, String name, Supplier supplier) {
         this.id = id;
@@ -12,7 +17,11 @@ public class Product {
 
         this.premiumAccount = null;
         this.supplier = supplier;
+        this.lineItemsList = new ArrayList<>();
+
     }
+
+    public List<LineItem> getLineItemsList() { return lineItemsList; }
 
     public String getId() {
         return id;

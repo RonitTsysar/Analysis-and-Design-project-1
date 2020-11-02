@@ -11,7 +11,7 @@ public class WebUser {
     private ShoppingCart shoppingCart;
 
 	public void setShoppingCart(ShoppingCart shoppingCart) throws Exception {
-        if(shoppingCart != null)
+        if(shoppingCart == null)
             throw new RuntimeException();
         this.shoppingCart = shoppingCart; 
     }
@@ -20,10 +20,10 @@ public class WebUser {
         this.login_id = login_id;
         this.password = password;
         this.state = UserState.New;
-        this.customer = createCusomer();
+        this.customer = createCustomer();
     }
 
-    private Customer createCusomer() {
+    private Customer createCustomer() {
         
         shoppingCart = null;
 
@@ -100,9 +100,9 @@ public class WebUser {
         return shoppingCart;
     }
 
-    public void setShoppingCart(ShoppingCart shoppingCart) {
-        this.shoppingCart = shoppingCart;
-    }
+//    public void setShoppingCart(ShoppingCart shoppingCart) {
+//        this.shoppingCart = shoppingCart;
+//    }
 
     public void removeShoppingCart(){
         this.shoppingCart = null;
