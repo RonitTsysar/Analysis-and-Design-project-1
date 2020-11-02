@@ -17,7 +17,49 @@ public class Main {
         System.out.println("Please enter password: ");
         String password = scanner.nextLine();
 
-        return(new WebUser(login_id, password));
+        WebUser webUser = WebUser.webUserFactory(login_id, password);
+        Customer customer = createCustomer(webUser);
+        if(!webUser.addCustomer(customer))
+            throw new RuntimeException("Linking WebUser to customer failed.");
+
+        Account account = createAccount(customer);
+        if(!customer.addAccount(account))
+            throw new RuntimeException("Linking Customer to Account failed.");
+
+        return webUser;
+    }
+
+    // GUY and RONIT
+    public static Customer createCustomer(WebUser webUser) {
+
+        System.out.println("Please enter customer id: ");
+        String id = scanner.nextLine();
+
+        System.out.println("Please enter address: ");
+        Address address = new Address(scanner.nextLine());
+
+        System.out.println("Please enter phone: ");
+        String phone= scanner.nextLine();
+
+        System.out.println("Please enter email: ");
+        String email = scanner.nextLine();
+
+        //TODO: check if you can send 'this' before WebUser constructor finished
+        return (Customer.customerFactory(id, address, phone, email, webUser));
+    }
+
+    // GUY and RONIT
+    public static Account createAccount(Customer customer){
+
+        System.out.println("Please enter billing address:");
+        String billingAddress = scanner.nextLine();
+        scanner.close();
+
+        System.out.println("Are you a Premium Account? Please enter yes/no:");
+        if(scanner.nextLine().equals("yes"))
+            return(PremiumAccount.PremiumAccountFactory(customer.getId(), billingAddress, customer));
+        else
+            return(Account.accountFactory(customer.getId(), billingAddress, customer));
     }
 
     public static void SystemStartUp()
@@ -31,31 +73,32 @@ public class Main {
         Product ramenProduct = new Product("Ramen", "Ramen", mosheSupplier);
         productsList.put(ramenProduct.getId(), ramenProduct);
 
-        WebUser daniWU = new WebUser("Dani");
-        daniWU.setPassword("Dani123");
-        Customer daniCustomer = new Customer(null , null, null, null, daniWU);
-        daniWU.setCustomer(daniCustomer);
-        Account daniAccount = new Account("Dani",null,daniCustomer);
-        daniCustomer.setAccount(daniAccount);
-        ShoppingCart daniShoppingCart = new ShoppingCart();
-        daniAccount.setShoppingCart(daniShoppingCart);
-        daniWU.setShoppingCart(daniShoppingCart);
+        //WebUser dani
+        WebUser daniWU = WebUser.webUserFactory("Dani","Dani123");
+        Customer daniCustomer = Customer.customerFactory(null , null, null, null, daniWU);
+        daniWU.addCustomer(daniCustomer);
+        Account daniAccount = Account.accountFactory("Dani",null, daniCustomer);
+        daniCustomer.addAccount(daniAccount);
+//        ShoppingCart daniShoppingCart = ShoppingCart.shoppingCartFactory(daniWU);
+//        daniAccount.setShoppingCart(daniShoppingCart);
+//        daniWU.setShoppingCart(daniShoppingCart);
         //TODO: add webUser State;
-        customersList.add(daniCustomer);
+        //customersList.add(daniCustomer);
 
         //WebUser Dana
-        WebUser danaWU = new WebUser("Dana");
-        danaWU.setPassword("Dana123");
-        Customer danaCustomer = new Customer(null , null, null, null, danaWU);
+        WebUser danaWU = WebUser.webUserFactory("Dana","Dana123");
+        Customer danaCustomer = Customer.customerFactory(null , null, null, null, danaWU);
         danaWU.setCustomer(danaCustomer);
-        PremiumAccount danaAccount = new PremiumAccount("Dana",null,danaCustomer);
-        danaCustomer.setAccount(danaAccount);
-        ShoppingCart danaShoppingCart = new ShoppingCart();
-        danaAccount.setShoppingCart(danaShoppingCart);
-        danaWU.setShoppingCart(danaShoppingCart);
+        PremiumAccount danaAccount = PremiumAccount.PremiumAccountFactory("Dana",null, danaCustomer);
+        danaCustomer.addAccount(danaAccount);
+//        ShoppingCart danaShoppingCart = new ShoppingCart();
+//        danaAccount.setShoppingCart(danaShoppingCart);
+//        danaWU.setShoppingCart(danaShoppingCart);
         //TODO: add webUser State;
-        customersList.add(danaCustomer);
+//        customersList.add(danaCustomer);
 
+        webUsersList.add(danaWU);
+        webUsersList.add(daniWU);
         danaAccount.getProducts().add(bambaProduct);
         bambaProduct.setPremiumAccount(danaAccount);
     }
@@ -143,7 +186,7 @@ public class Main {
 
     private static void logoutWebUser(String login_id){
         // written by Lior.
-        WebUser tmpUser=null;
+        WebUser tmpUser = null;
         for (WebUser wu : webUsersList) {
             if(wu.getLogin_id().equals(login_id))
             {
@@ -161,13 +204,13 @@ public class Main {
 
     private static void loginWebUser(String login_id) {
         // written by Lior
-        String webUserPassword=null;
-        WebUser tmpUser=null;
+        String webUserPassword = null;
+        WebUser tmpUser = null;
         for (WebUser wu : webUsersList) {
             if(wu.getLogin_id().equals(login_id))
             {
-                webUserPassword=wu.getPassword();
-                tmpUser=wu;
+                webUserPassword = wu.getPassword();
+                tmpUser = wu;
             }
         }
         //TODO: decide if we want to check first if user exist (in my opinion its useless) - lior
@@ -197,7 +240,7 @@ public class Main {
         prod.getSupplier().getProducts().remove(prod);//delete product from supplier product list
         productsList.remove(productName);
         //when removing product - delete all lineItems connected to him:
-        List lineItemsOfProduct=prod.getLineItemsList();
+        List lineItemsOfProduct = prod.getLineItemsList();
         for (Object lineItem : lineItemsOfProduct) {
             ((LineItem)lineItem).getShoppingCart().getLineItemList().remove(lineItem);
             ((LineItem)lineItem).getOrder().getLineItems().remove(lineItem);

@@ -5,24 +5,38 @@ import java.util.List;
 public class ShoppingCart {
     private Date created;
     private WebUser webUser;
+    private Account account;
 
     private List<LineItem> lineItemList;
 
-    public ShoppingCart() {
+    public static ShoppingCart shoppingCartFactory(WebUser webUser){
+        ShoppingCart shoppingCart = new ShoppingCart(webUser);
+        shoppingCart.webUser.addShoppingCart(shoppingCart);
+
+        return shoppingCart;
+    }
+    private ShoppingCart(WebUser webUser) {
          this.created = new Date();
          this.lineItemList = new ArrayList<>();
-         this.webUser = null;
+         this.webUser = webUser;
+         this.account = null;
     }
 
-    private void addWebUser(WebUser webUser){
-        if(webUser == null){
-            throw new RuntimeException("webUser can't be null");
-        }
+    public Account getAccount() {
+        return account;
+    }
 
-        if(this.webUser != null){
-            throw new RuntimeException("This shopping cart already has a webUser");
+    public void setAccount(Account account) {
+        this.account = account;
+    }
+
+    public boolean addAccount(Account account){
+        if(this.account == null && account != null)
+        {
+            setAccount(account);
+            return true;
         }
-        this.webUser = webUser;
+        return false;
     }
 
     public Date getCreated() {

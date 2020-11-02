@@ -6,7 +6,13 @@ public class PremiumAccount extends Account {
 
     private List<Product> products;
 
-    public PremiumAccount(String id, String billingAddress, Customer customer) throws Exception {
+    public static PremiumAccount PremiumAccountFactory(String id, String billingAddress, Customer customer){
+        PremiumAccount premiumAccount = new PremiumAccount(id, billingAddress, customer);
+
+        return premiumAccount;
+    }
+
+    private PremiumAccount(String id, String billingAddress, Customer customer){
         super(id, billingAddress, customer);
         //String accountId,String billingAddress,Customer customer
         this.products = new ArrayList<>();
@@ -17,11 +23,11 @@ public class PremiumAccount extends Account {
         return this.products;
     }
 
-    /*public List<Product> getProducts() {
+    public List<Product> getProducts() {
         return products;
     }
 
     public void setProducts(List<Product> products) {
         this.products = products;
-    }*/
+    }
 }
