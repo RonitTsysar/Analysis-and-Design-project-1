@@ -29,7 +29,7 @@ public class WebUser {
 
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("Please enter id: ");
+        System.out.println("Please enter customer id: ");
         String id = scanner.nextLine();
 
         System.out.println("Please enter address: ");

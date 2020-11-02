@@ -4,7 +4,8 @@ import java.util.*;
 public class Main {
 
     static Scanner scanner = new Scanner(System.in);
-    static ArrayList<Customer> customersList = new ArrayList<Customer>();
+//    static ArrayList<Customer> customersList = new ArrayList<Customer>();
+    static ArrayList<WebUser> webUsersList = new ArrayList<>();
     static Map<String, Supplier> suppliersList = new HashMap<>();
     static Map<String, Product> productsList = new HashMap<>(); // key: productName , value: Product
     static Account activeAccount;
@@ -98,10 +99,12 @@ public class Main {
 
                     case "Login":
                         System.out.println("Login WebUser");
+                        loginWebUser(arg);
                         break;
 
                     case "Logout":
                         System.out.println(" Logout WebUser ");
+                        logoutWebUser(arg);
                         break;
 
                     case "Make":
@@ -115,6 +118,7 @@ public class Main {
 
                     case "Link":
                         System.out.println(" Link Product ");
+                        linkProduct(arg);
                         break;
 
                     case "Delete":
@@ -136,6 +140,48 @@ public class Main {
             scanner.close();
         }
     }
+
+    private static void logoutWebUser(String login_id){
+        // written by Lior.
+        WebUser tmpUser=null;
+        for (WebUser wu : webUsersList) {
+            if(wu.getLogin_id().equals(login_id))
+            {
+                tmpUser=wu;
+            }
+        }
+        Account account = tmpUser.getCustomer().getAccount();
+        if(activeAccount.equals(account)) {
+            activeAccount = null;
+            tmpUser.setState(UserState.Blocked);//i assume Blocked=LoggedOut
+        }
+        else
+            System.out.println("User with id: "+login_id+" is not currently logged in");
+    }
+
+    private static void loginWebUser(String login_id) {
+        // written by Lior
+        String webUserPassword=null;
+        WebUser tmpUser=null;
+        for (WebUser wu : webUsersList) {
+            if(wu.getLogin_id().equals(login_id))
+            {
+                webUserPassword=wu.getPassword();
+                tmpUser=wu;
+            }
+        }
+        //TODO: decide if we want to check first if user exist (in my opinion its useless) - lior
+        System.out.println("Please enter password:");
+        String typedPassword=scanner.nextLine();
+        if(!typedPassword.equals(webUserPassword)){
+            System.out.println("Password incorrect");
+            return;
+        }
+        activeAccount=tmpUser.getCustomer().getAccount();
+        tmpUser.setState(UserState.Active);
+        System.out.println("user "+login_id+" logged in successfully");
+    }
+
 
     private static void linkProduct(String productName){
         // written by lior

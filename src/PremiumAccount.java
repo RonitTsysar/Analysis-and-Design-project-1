@@ -6,7 +6,7 @@ public class PremiumAccount extends Account {
 
     private List<Product> products;
 
-    public PremiumAccount(String id, String billingAddress, Customer customer) {
+    public PremiumAccount(String id, String billingAddress, Customer customer) throws Exception {
         super(id, billingAddress, customer);
         //String accountId,String billingAddress,Customer customer
         this.products = new ArrayList<>();
