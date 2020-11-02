@@ -63,22 +63,23 @@ public class Main {
     public static void main(String[] args) 
     {
         SystemStartUp();
+        boolean stopProgram = false;
 
         try{
             while (true)
-            { 
+            {
                 String command = scanner.nextLine();
                 if (command.equals(""))
                     continue;
-    
+
                 ArrayList<String> command_list = new ArrayList<String>(Arrays.asList(command.split(" ")));
                 command = command_list.get(0);
                 String type = command_list.get(1);
                 String arg = "";
-                
+
                 if(command_list.size() > 2)
                     arg = command_list.get(2);
-    
+
                 switch (command) {
                     case "Add":
                         if (type.equals("WebUser")) {
@@ -89,41 +90,41 @@ public class Main {
                             addProduct();
                         }
                         break;
-    
+
                     case "Remove":
                         System.out.println("Remove WebUser");
                         break;
-                    
+
                     case "Login":
                         System.out.println("Login WebUser");
                         break;
-                    
+
                     case "Logout":
                         System.out.println(" Logout WebUser ");
                         break;
-                               
+
                     case "Make":
                         System.out.println("Make order");
                         //todo: makeOrder()
                         break;
-    
+
                     case "Display":
                         System.out.println("Display order");
                         break;
-                    
+
                     case "Link":
                         System.out.println(" Link Product ");
                         break;
-    
+
                     case "Delete":
                         System.out.println(" Delete Product ");
                         deleteProduct(arg);
                         break;
-    
+
                     case "ShowAllObjects":
                         System.out.println(" ShowAllObjects ");
                         break;
-    
+
                     case "ShowObjectId ":
                         System.out.println(" ShowObjectId ");
                         break;
@@ -184,4 +185,48 @@ public class Main {
         return supplier;
 
     }
+
+//    public static void makeOrder(){
+//        System.out.println("Please Enter UserName (login_id): ");
+//        String login_id = scanner.nextLine();
+//        WebUser curWebUser = null;
+//        for (WebUser webUser : webUserList) {
+//            if(webUser.getLogin_id().equals(login_id)){
+//                curWebUser = webUser;
+//            }
+//            else{
+//                throw new RuntimeException("User not found");
+//            }
+//        }
+//        if(curWebUser != null)
+//            curWebUser.displayOwnedItems();
+//        System.out.println("Do You want to continue to the Products List?  Y/N");
+//        String cmd = scanner.nextLine();
+//        if(!cmd.equals("Y")) {
+//            return;
+//        }
+//        else{
+//            for (String productID : productsList.keySet()) {
+//                System.out.println(productsList.get(productID));
+//            }
+//
+//            System.out.println("Please type the product ID you want");
+//            String productID = scanner.nextLine();
+//            Product chosenProduct = productsList.get(productID);
+//            if (chosenProduct == null)
+//                throw new RuntimeException("Product not found");
+//            System.out.println("Please enter the QUANTITY you want");
+//            String quantity = scanner.nextLine();
+//            //TODO: CREATE NEW LINE ITEMS FOR EACH PTODUCT AND QUANTITY
+//
+//            // TODO: CREATE NEW ORDER THAT CONTAINS ALL THE ITEMS
+//            System.out.println("Please enter orderID");
+//            String orderNum = scanner.nextLine();
+//            Date orderDate = new Date();
+//            Date shippedDate = null;
+//
+//            Address shipToAddress =
+//        }
+//
+//    }
 }

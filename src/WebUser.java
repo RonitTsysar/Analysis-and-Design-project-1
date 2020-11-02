@@ -3,13 +3,6 @@ import java.util.List;
 
 public class WebUser {
 
-    enum UserState {
-        New,
-        Active,
-        Blocked,
-        Banned
-    }
-
     private String login_id;
     private String password;
     private UserState state;
@@ -49,6 +42,7 @@ public class WebUser {
         String email = scanner.nextLine();
         scanner.close();
 
+        //TODO: check if you can send 'this' before WebUser constructor finished
         return (new Customer(id, address, phone, email, this));
     }
 
@@ -62,7 +56,7 @@ public class WebUser {
         }
     }
 
-    /*public String getLogin_id() {
+    public String getLogin_id() {
         return login_id;
     }
 
@@ -120,5 +114,5 @@ public class WebUser {
             return true;
         }
         return false;
-    }*/
+    }
 }

@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class Account {
         //       Date closed
         //       balance
         this.customer = customer;
-        this.shoppingCart = new ShoppingCart(customer.getWebUser());
+        this.shoppingCart = new ShoppingCart();
         
         payments = new ArrayList<Payment>();
         orders = new ArrayList<Order>();

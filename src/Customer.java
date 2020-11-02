@@ -35,7 +35,7 @@ public class Customer {
         else
             return(new Account(this.id, billingAddress, this));
     }
-    /*public void setAccount(Account account)
+    public void setAccount(Account account)
     {
         // TODO: create check if account already connected !!!!!***********
         this.account=account;
@@ -74,9 +74,6 @@ public class Customer {
         this.email = email;
     }
 
-    public WebUser getWebUser() {
-        return webUser;
-    }
 
     public void setWebUser(WebUser webUser) {
         this.webUser = webUser;
@@ -92,5 +89,5 @@ public class Customer {
 
     public void removeWebUser(){
         this.webUser = null;
-    }*/
+    }
 }

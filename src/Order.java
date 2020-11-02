@@ -3,13 +3,6 @@ import java.util.Date;
 import java.util.List;
 
 public class Order {
-    enum OrderStatus {
-        New,
-        Hold,
-        Shipped,
-        Delivered,
-        Closed
-    }
 
     private String number;
     private Date ordered;
