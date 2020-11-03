@@ -61,4 +61,13 @@ public class ShoppingCart {
     public void setLineItemList(List<LineItem> lineItemList) {
         this.lineItemList = lineItemList;
     }
+
+    public boolean addLineItem(LineItem lineItem){
+        if(lineItem == null){
+            return false;
+        }
+        this.lineItemList.add(lineItem);
+        lineItem.setShoppingCart(this);
+        return true;
+    }
 }

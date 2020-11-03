@@ -47,15 +47,15 @@ public class WebUser {
         return (Customer.customerFactory(id, address, phone, email, webUser, false));
     }
 
-    public void displayOwnedItems() {
-        List<Order> orders = this.customer.getAccount().getOrders();
-        for (Order order : orders) {
-            List<LineItem> orderLineItems = order.getLineItems();
-            for (LineItem orderLineItem : orderLineItems) {
-                System.out.println(orderLineItem);
-            }
-        }
-    }
+//    public void displayOwnedItems() {
+//        List<Order> orders = this.customer.getAccount().getOrders();
+//        for (Order order : orders) {
+//            List<LineItem> orderLineItems = order.getLineItems();
+//            for (LineItem orderLineItem : orderLineItems) {
+//                System.out.println(orderLineItem);
+//            }
+//        }
+//    }
 
     public String getLogin_id() {
         return login_id;

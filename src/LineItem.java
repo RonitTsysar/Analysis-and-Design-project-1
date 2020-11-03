@@ -60,13 +60,4 @@ public class LineItem {
             this.order = order;
         throw new RuntimeException("Couldn't connect lineItem to order");
     }
-
-    @Override
-    public String toString() {
-        return "LineItem:" +
-                "quantity=" + quantity +
-                ", price=" + price +
-                ", product=" + product +
-                '}';
-    }
 }
