@@ -6,13 +6,13 @@ public class Main {
     static Scanner scanner = new Scanner(System.in);
     static ArrayList<Customer> customersList = new ArrayList<Customer>();
     static Map<String, WebUser> webUsersList = new HashMap();
-    static Map<String, Supplier> suppliersList = new HashMap<>();
+    static Map<String, Supplier> suppliersList = new HashMap<>();//key: supplierName
     static Map<String, Product> productsList = new HashMap<>(); // key: productName , value: Product
     static WebUser activeWebUser;
 
     public static void SystemStartUp() {
         Supplier mosheSupplier = new Supplier("123", "Moshe");
-        suppliersList.put(mosheSupplier.getId(), mosheSupplier);
+        suppliersList.put(mosheSupplier.getName(), mosheSupplier);
 
         Product bambaProduct = new Product("Bamba", "Bamba", mosheSupplier);
         mosheSupplier.getProducts().add(bambaProduct);
