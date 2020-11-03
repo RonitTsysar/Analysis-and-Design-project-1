@@ -14,7 +14,7 @@ public class PremiumAccount extends Account {
 
     private PremiumAccount(String id, String billingAddress, Customer customer){
         super(id, billingAddress, customer);
-
+        this.setShoppingCart(ShoppingCart.shoppingCartFactory(this));
         this.products = new ArrayList<>();
     }
 
@@ -22,9 +22,7 @@ public class PremiumAccount extends Account {
         return this.products;
     }
 
-    public List<Product> getProducts() {
-        return products;
-    }
+
 
     public void setProducts(List<Product> products) {
         this.products = products;

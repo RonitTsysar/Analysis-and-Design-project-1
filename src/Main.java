@@ -8,7 +8,7 @@ public class Main {
     static Map<String, WebUser> webUsersList = new HashMap();
     static Map<String, Supplier> suppliersList = new HashMap<>();
     static Map<String, Product> productsList = new HashMap<>(); // key: productName , value: Product
-    static Account activeAccount;
+    static WebUser activeWebUser;
 
     public static void SystemStartUp()
     {
@@ -16,9 +16,11 @@ public class Main {
         suppliersList.put(mosheSupplier.getId(), mosheSupplier);
 
         Product bambaProduct = new Product("Bamba", "Bamba", mosheSupplier);
+        mosheSupplier.getProducts().add(bambaProduct);
         productsList.put(bambaProduct.getId(), bambaProduct);
 
         Product ramenProduct = new Product("Ramen", "Ramen", mosheSupplier);
+        mosheSupplier.getProducts().add(ramenProduct);
         productsList.put(ramenProduct.getId(), ramenProduct);
 
         //WebUser dani
@@ -37,7 +39,7 @@ public class Main {
 
         webUsersList.put("Dana", danaWU);
         webUsersList.put("Dani", daniWU);
-        danaAccount.getProducts().add(bambaProduct);
+        danaAccount.getProductsList().add(bambaProduct);
         bambaProduct.setPremiumAccount(danaAccount);
     }
 
@@ -49,6 +51,7 @@ public class Main {
         try{
             while (true)
             {
+                System.out.println("Please enter command: ");
                 String command = scanner.nextLine();
                 if (command.equals(""))
                     continue;
@@ -138,60 +141,75 @@ public class Main {
     }
 
     public static void removeWebUser(String login_id){
-//        if(login_id.equals("Dana") || login_id.equals("Dani")){
-//
-//        }
-
+        WebUser wuToRemove = webUsersList.get(login_id);
         webUsersList.remove(login_id);
         //TODO: add deletions of products/payment/order. check if premiumAccount.
+        if(wuToRemove.getCustomer().getAccount() instanceof PremiumAccount)
+        {
+            for (Product prod : ((PremiumAccount) wuToRemove.getCustomer().getAccount()).getProductsList()) {
+                prod.setPremiumAccount(null);
+            }
+            ((PremiumAccount) wuToRemove.getCustomer().getAccount()).setProducts(null);
+        }
+        if(activeWebUser.equals(wuToRemove)) {activeWebUser=null;}
     }
 
     private static void logoutWebUser(String login_id){
         // written by Lior.
-        WebUser tmpUser = null;
-        for (WebUser wu : webUsersList.values()) {
-            if(wu.getLogin_id().equals(login_id))
-            {
-                tmpUser = wu;
-            }
+        if(activeWebUser == null){
+            System.out.println("Currently no one is logged in");
+            return;
         }
-        Account account = tmpUser.getCustomer().getAccount();
-        if(activeAccount.equals(account)) {
-            activeAccount = null;
-            tmpUser.setState(UserState.Blocked);//i assume Blocked=LoggedOut
+        WebUser userToLogout = webUsersList.get(login_id);
+        if(userToLogout == null){
+            System.out.println("User not exist");
+            return;
         }
-        else
-            System.out.println("User with id: "+login_id+" is not currently logged in");
+        if(activeWebUser.equals(userToLogout)) {
+            activeWebUser = null;
+            userToLogout.setState(UserState.Blocked);//i assume Blocked=LoggedOut
+        }
+        else {
+            System.out.println("WebUser with id: " + login_id + " is not currently logged in");
+            System.out.println("WebUser logged in id is: " + activeWebUser.getLogin_id());
+        }
     }
 
     private static void loginWebUser(String login_id) {
         // written by Lior
-        String webUserPassword = null;
-        WebUser tmpUser = null;
-        for (WebUser wu : webUsersList.values()) {
-            if(wu.getLogin_id().equals(login_id))
-            {
-                webUserPassword = wu.getPassword();
-                tmpUser = wu;
-            }
+        if(activeWebUser != null)
+            logoutWebUser(activeWebUser.getLogin_id());//auto logout
+        WebUser userToLogin = webUsersList.get(login_id);
+        if(userToLogin == null){
+            System.out.println("WebUser doesn't exist");
+            return;
         }
-        //TODO: decide if we want to check first if user exist (in my opinion its useless) - lior
+        String webUserPassword = userToLogin.getPassword();
         System.out.println("Please enter password:");
         String typedPassword = scanner.nextLine();
         if(!typedPassword.equals(webUserPassword)){
             System.out.println("Password incorrect");
             return;
         }
-        activeAccount=tmpUser.getCustomer().getAccount();
-        tmpUser.setState(UserState.Active);
-        System.out.println("user "+login_id+" logged in successfully");
+        activeWebUser=userToLogin;
+        userToLogin.setState(UserState.Active);
+        System.out.println("WebUser "+login_id+" logged in successfully");
     }
 
 
     private static void linkProduct(String productName){
         // written by lior
-        if(activeAccount instanceof PremiumAccount){
-            ((PremiumAccount) activeAccount).getProductsList().add(productsList.get(productName));
+        if(activeWebUser == null) {
+            System.out.println("Please Login first");
+            return;
+        }
+        Product prodToLink = productsList.get(productName);
+        if(activeWebUser.getCustomer().getAccount() instanceof PremiumAccount && prodToLink != null){
+            ((PremiumAccount) activeWebUser.getCustomer().getAccount()).getProductsList().add(prodToLink);
+            prodToLink.setPremiumAccount((PremiumAccount) activeWebUser.getCustomer().getAccount());
+        }
+        else{
+            System.out.println("Aborting: Active user is not premium or product doesn't exist");
         }
 
     }
@@ -199,6 +217,10 @@ public class Main {
     private static void deleteProduct(String productName){
         //changed by Lior
         Product prod = productsList.get(productName);
+        if(prod == null){
+            System.out.println("product doesn't exist");
+            return;
+        }
         prod.getSupplier().getProducts().remove(prod);//delete product from supplier product list
         productsList.remove(productName);
         //when removing product - delete all lineItems connected to him:
@@ -215,12 +237,21 @@ public class Main {
     private static void addProduct() {
         System.out.println("Please enter product name:");
         String productName = scanner.nextLine();
-        while(productExists(productName)){
+        Product prodToAdd = productsList.get(productName);
+        while(prodToAdd != null){
             System.out.println("Product name already exists. enter another name:");
             productName = scanner.nextLine();
+            prodToAdd = productsList.get(productName);
         }
         System.out.println("Please enter supplier name:");
-        Supplier supplier = checkSupplier(scanner.nextLine());
+        String supplierName= scanner.nextLine();
+        Supplier supplier = suppliersList.get(supplierName);
+        if(supplier == null){
+            System.out.println("Enter supplier ID: ");
+            String supId = scanner.nextLine();
+            supplier = new Supplier(supId,supplierName);
+            suppliersList.put(supId, supplier);
+        }
         System.out.println("please enter product id:");
         String productId = scanner.nextLine();
         Product product = new Product(productId, productName, supplier);
@@ -232,19 +263,7 @@ public class Main {
         return productsList.containsKey(productName);
     }
 
-    private static Supplier checkSupplier(String supplierId) {
-        if(suppliersList.containsKey(supplierId))
-            return suppliersList.get(supplierId);
 
-        System.out.println("Please enter supplier's name:");
-            String supplierName = scanner.nextLine();
-
-        Supplier supplier = new Supplier(supplierId, supplierName);
-        suppliersList.put(supplierId, supplier);
-
-        return supplier;
-
-    }
 
     public static void makeOrder(){
         System.out.println("Please Enter UserName (login_id): ");
@@ -292,7 +311,7 @@ public class Main {
             Address ship_toAddress= new Address(shippingAddress);
             //todo: multiple the QUANTITY*PRICE - from the lineITEM attributes
             float total = Float.parseFloat(quantity);
-            Order newOrder = new Order(orderNum, orderDate, shippedDate, ship_toAddress, OrderStatus.New, total, activeAccount);
+            Order newOrder = new Order(orderNum, orderDate, shippedDate, ship_toAddress, OrderStatus.New, total, activeWebUser.getCustomer().getAccount());
             //Order was created for the account
 
             System.out.println("How do you want to pay - Immediate Payment/ Delayed Payment ?  Please enter 1-Immediate or 2-Delayed");
@@ -310,7 +329,7 @@ public class Main {
             else{
                 newOrder.addDelayedPayment(paymentID, new Date(), total, null, new Date());
             }
-            newOrder.setAccount(activeAccount);
+            newOrder.setAccount(activeWebUser.getCustomer().getAccount());
       }
 //
   }

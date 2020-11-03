@@ -12,15 +12,13 @@ public class ShoppingCart {
     public static ShoppingCart shoppingCartFactory(Account account){
         ShoppingCart shoppingCart = new ShoppingCart(account);
         shoppingCart.webUser.addShoppingCart(shoppingCart);
-        shoppingCart.account = account;
-
         return shoppingCart;
     }
     private ShoppingCart(Account account) {
          this.created = new Date();
          this.lineItemList = new ArrayList<>();
          this.webUser = account.getCustomer().getWebUser();
-         this.account = null;
+         this.account =  account;
     }
 
     public Account getAccount() {

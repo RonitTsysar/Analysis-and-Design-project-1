@@ -52,12 +52,8 @@ public class Product {
     }
 
     public void setPremiumAccount(PremiumAccount premiumAccount) {
-        if (this.premiumAccount == null)
-            this.premiumAccount = premiumAccount;
+        this.premiumAccount = premiumAccount;
 
-        else {
-            throw new RuntimeException("This product is belong to another account");
-        }
     }
 
     @Override
