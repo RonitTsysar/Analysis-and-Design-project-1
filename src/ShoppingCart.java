@@ -9,16 +9,17 @@ public class ShoppingCart {
 
     private List<LineItem> lineItemList;
 
-    public static ShoppingCart shoppingCartFactory(WebUser webUser){
-        ShoppingCart shoppingCart = new ShoppingCart(webUser);
+    public static ShoppingCart shoppingCartFactory(Account account){
+        ShoppingCart shoppingCart = new ShoppingCart(account);
         shoppingCart.webUser.addShoppingCart(shoppingCart);
+        shoppingCart.account = account;
 
         return shoppingCart;
     }
-    private ShoppingCart(WebUser webUser) {
+    private ShoppingCart(Account account) {
          this.created = new Date();
          this.lineItemList = new ArrayList<>();
-         this.webUser = webUser;
+         this.webUser = account.getCustomer().getWebUser();
          this.account = null;
     }
 

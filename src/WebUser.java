@@ -10,8 +10,10 @@ public class WebUser {
     private Customer customer;
     private ShoppingCart shoppingCart;
 
-    public static WebUser webUserFactory(String login_id ,String password){
+    public static WebUser webUserFactory(String login_id ,String password, boolean fromStartUp){
         WebUser webUser = new WebUser(login_id, password);
+        if(!fromStartUp)
+            webUser.customer = createCustomer(webUser);
 
         return webUser;
     }
@@ -21,35 +23,29 @@ public class WebUser {
         this.password = password;
         this.state = UserState.New;
 
+        this.customer = null;
         this.shoppingCart = null;
     }
 
-    public void setShoppingCart(ShoppingCart shoppingCart){
-        if(shoppingCart == null)
-            throw new RuntimeException();
-        this.shoppingCart = shoppingCart;
-    }
+    private static Customer createCustomer(WebUser webUser) {
 
-//    private static Customer createCustomer(WebUser webUser) {
-//
-//        Scanner scanner = new Scanner(System.in);
-//
-//        System.out.println("Please enter customer id: ");
-//        String id = scanner.nextLine();
-//
-//        System.out.println("Please enter address: ");
-//        Address address = new Address(scanner.nextLine());
-//
-//        System.out.println("Please enter phone: ");
-//        String phone= scanner.nextLine();
-//
-//        System.out.println("Please enter email: ");
-//        String email = scanner.nextLine();
-//        scanner.close();
-//
-//        //TODO: check if you can send 'this' before WebUser constructor finished
-//        return (Customer.customerFactory(id, address, phone, email, webUser));
-//    }
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Please enter customer id: ");
+        String id = scanner.nextLine();
+
+        System.out.println("Please enter address: ");
+        Address address = new Address(scanner.nextLine());
+
+        System.out.println("Please enter phone: ");
+        String phone= scanner.nextLine();
+
+        System.out.println("Please enter email: ");
+        String email = scanner.nextLine();
+
+        //TODO: check if you can send 'this' before WebUser constructor finished
+        return (Customer.customerFactory(id, address, phone, email, webUser, false));
+    }
 
     public void displayOwnedItems() {
         List<Order> orders = this.customer.getAccount().getOrders();
@@ -89,6 +85,10 @@ public class WebUser {
         return customer;
     }
 
+    public ShoppingCart getShoppingCart() {
+        return shoppingCart;
+    }
+
     public void setCustomer(Customer newCustomer) {
         this.customer = newCustomer;
     }
@@ -101,13 +101,9 @@ public class WebUser {
         return false;
     }
 
-    public ShoppingCart getShoppingCart() {
-        return shoppingCart;
+    public void setShoppingCart(ShoppingCart shoppingCart) {
+        this.shoppingCart = shoppingCart;
     }
-
-//    public void setShoppingCart(ShoppingCart shoppingCart) {
-//        this.shoppingCart = shoppingCart;
-//    }
 
     public void removeShoppingCart(){
         this.shoppingCart = null;

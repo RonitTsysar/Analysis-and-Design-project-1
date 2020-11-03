@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Scanner;
 
 public class Account {
 
@@ -18,15 +19,13 @@ public class Account {
 
     public static Account accountFactory(String id, String billingAddress, Customer customer){
         Account account = new Account(id, billingAddress, customer);
-        ShoppingCart shoppingCart = ShoppingCart.shoppingCartFactory(customer.getWebUser());
-        shoppingCart.addAccount(account);
-        account.shoppingCart = shoppingCart;
-        //no need to set account's customer!!
+        account.shoppingCart = createShoppingCart(account);
+
         return account;
     }
 
     protected Account(String id, String billingAddress, Customer customer){
-        
+
         this.id = id;
         this.billing_address = billingAddress;
         this.is_closed = false;
@@ -37,6 +36,13 @@ public class Account {
         this.customer = customer;
         payments = new ArrayList<Payment>();
         orders = new ArrayList<Order>();
+    }
+
+    private static ShoppingCart createShoppingCart(Account account) {
+        ShoppingCart shoppingCart = ShoppingCart.shoppingCartFactory(account);
+        account.shoppingCart = shoppingCart;
+
+        return shoppingCart;
     }
 
     public void setShoppingCart(ShoppingCart shoppingCart){
@@ -57,5 +63,9 @@ public class Account {
 
     public ShoppingCart getShoppingCart() {
         return shoppingCart;
+    }
+
+    public Customer getCustomer() {
+        return customer;
     }
 }

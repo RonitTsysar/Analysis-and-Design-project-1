@@ -4,65 +4,11 @@ import java.util.*;
 public class Main {
 
     static Scanner scanner = new Scanner(System.in);
-//    static ArrayList<Customer> customersList = new ArrayList<Customer>();
-    static ArrayList<WebUser> webUsersList = new ArrayList<>();
+    static ArrayList<Customer> customersList = new ArrayList<Customer>();
+    static Map<String, WebUser> webUsersList = new HashMap();
     static Map<String, Supplier> suppliersList = new HashMap<>();
     static Map<String, Product> productsList = new HashMap<>(); // key: productName , value: Product
     static Account activeAccount;
-
-
-
-    public static WebUser addWebUser(String login_id){
-
-        System.out.println("Please enter password: ");
-        String password = scanner.nextLine();
-
-        WebUser webUser = WebUser.webUserFactory(login_id, password);
-        Customer customer = createCustomer(webUser);
-        if(!webUser.addCustomer(customer))
-            throw new RuntimeException("Linking WebUser to customer failed.");
-
-        Account account = createAccount(customer);
-        if(!customer.addAccount(account))
-            throw new RuntimeException("Linking Customer to Account failed.");
-
-        //TODO: check for the shopping cart if created
-
-        return webUser;
-    }
-
-    // GUY and RONIT
-    public static Customer createCustomer(WebUser webUser) {
-
-        System.out.println("Please enter customer id: ");
-        String id = scanner.nextLine();
-
-        System.out.println("Please enter address: ");
-        Address address = new Address(scanner.nextLine());
-
-        System.out.println("Please enter phone: ");
-        String phone= scanner.nextLine();
-
-        System.out.println("Please enter email: ");
-        String email = scanner.nextLine();
-
-        //TODO: check if you can send 'this' before WebUser constructor finished
-        return (Customer.customerFactory(id, address, phone, email, webUser));
-    }
-
-    // GUY and RONIT
-    public static Account createAccount(Customer customer){
-
-        System.out.println("Please enter billing address:");
-        String billingAddress = scanner.nextLine();
-        scanner.close();
-
-        System.out.println("Are you a Premium Account? Please enter yes/no:");
-        if(scanner.nextLine().equals("yes"))
-            return(PremiumAccount.PremiumAccountFactory(customer.getId(), billingAddress, customer));
-        else
-            return(Account.accountFactory(customer.getId(), billingAddress, customer));
-    }
 
     public static void SystemStartUp()
     {
@@ -76,36 +22,24 @@ public class Main {
         productsList.put(ramenProduct.getId(), ramenProduct);
 
         //WebUser dani
-        WebUser daniWU = WebUser.webUserFactory("Dani","Dani123");
-        Customer daniCustomer = Customer.customerFactory(null , null, null, null, daniWU);
+        WebUser daniWU = WebUser.webUserFactory("Dani","Dani123", true);
+        Customer daniCustomer = Customer.customerFactory(null , null, null, null, daniWU, true);
         daniWU.addCustomer(daniCustomer);
         Account daniAccount = Account.accountFactory("Dani",null, daniCustomer);
         daniCustomer.addAccount(daniAccount);
-//        ShoppingCart daniShoppingCart = ShoppingCart.shoppingCartFactory(daniWU);
-//        daniAccount.setShoppingCart(daniShoppingCart);
-//        daniWU.setShoppingCart(daniShoppingCart);
-        //TODO: add webUser State;
-        //customersList.add(daniCustomer);
 
         //WebUser Dana
-        WebUser danaWU = WebUser.webUserFactory("Dana","Dana123");
-        Customer danaCustomer = Customer.customerFactory(null , null, null, null, danaWU);
+        WebUser danaWU = WebUser.webUserFactory("Dana","Dana123", true);
+        Customer danaCustomer = Customer.customerFactory(null , null, null, null, danaWU, true);
         danaWU.setCustomer(danaCustomer);
         PremiumAccount danaAccount = PremiumAccount.PremiumAccountFactory("Dana",null, danaCustomer);
         danaCustomer.addAccount(danaAccount);
-//        ShoppingCart danaShoppingCart = new ShoppingCart();
-//        danaAccount.setShoppingCart(danaShoppingCart);
-//        danaWU.setShoppingCart(danaShoppingCart);
-        //TODO: add webUser State;
-//        customersList.add(danaCustomer);
 
-        webUsersList.add(danaWU);
-        webUsersList.add(daniWU);
+        webUsersList.put("Dana", danaWU);
+        webUsersList.put("Dani", daniWU);
         danaAccount.getProducts().add(bambaProduct);
         bambaProduct.setPremiumAccount(danaAccount);
     }
-
-
 
     public static void main(String[] args) 
     {
@@ -130,7 +64,11 @@ public class Main {
                 switch (command) {
                     case "Add":
                         if (type.equals("WebUser")) {
-                            webUsersList.add(addWebUser(arg));
+                            while(webUsersList.containsKey(arg)) {
+                                System.out.println("Please choose another id:");
+                                arg = scanner.nextLine();
+                            }
+                            webUsersList.put(arg, addWebUser(arg));
                         }
                         else if (type.equals("Product")){
                             System.out.println("Add Product");
@@ -140,6 +78,11 @@ public class Main {
 
                     case "Remove":
                         System.out.println("Remove WebUser");
+                        while(!webUsersList.containsKey(arg)){
+                            System.out.println("Id doesn't exist. Please choose another id:");
+                            arg = scanner.nextLine();
+                        }
+                        removeWebUser(arg);
                         break;
 
                     case "Login":
@@ -186,13 +129,30 @@ public class Main {
         }
     }
 
+    public static WebUser addWebUser(String login_id){
+        System.out.println("Please enter password: ");
+        String password = scanner.nextLine();
+        WebUser webUser = WebUser.webUserFactory(login_id, password, false);
+
+        return webUser;
+    }
+
+    public static void removeWebUser(String login_id){
+//        if(login_id.equals("Dana") || login_id.equals("Dani")){
+//
+//        }
+
+        webUsersList.remove(login_id);
+        //TODO: add deletions of products/payment/order. check if premiumAccount.
+    }
+
     private static void logoutWebUser(String login_id){
         // written by Lior.
         WebUser tmpUser = null;
-        for (WebUser wu : webUsersList) {
+        for (WebUser wu : webUsersList.values()) {
             if(wu.getLogin_id().equals(login_id))
             {
-                tmpUser=wu;
+                tmpUser = wu;
             }
         }
         Account account = tmpUser.getCustomer().getAccount();
@@ -208,7 +168,7 @@ public class Main {
         // written by Lior
         String webUserPassword = null;
         WebUser tmpUser = null;
-        for (WebUser wu : webUsersList) {
+        for (WebUser wu : webUsersList.values()) {
             if(wu.getLogin_id().equals(login_id))
             {
                 webUserPassword = wu.getPassword();
@@ -217,7 +177,7 @@ public class Main {
         }
         //TODO: decide if we want to check first if user exist (in my opinion its useless) - lior
         System.out.println("Please enter password:");
-        String typedPassword=scanner.nextLine();
+        String typedPassword = scanner.nextLine();
         if(!typedPassword.equals(webUserPassword)){
             System.out.println("Password incorrect");
             return;
@@ -290,7 +250,7 @@ public class Main {
         System.out.println("Please Enter UserName (login_id): ");
         String login_id = scanner.nextLine();
         WebUser curWebUser = null;
-        for (WebUser webUser : webUsersList) {
+        for (WebUser webUser : webUsersList.values()) {
             if(webUser.getLogin_id().equals(login_id)){
                 curWebUser = webUser;
             }

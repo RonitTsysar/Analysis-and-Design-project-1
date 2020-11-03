@@ -11,10 +11,11 @@ public class Customer {
     public WebUser getWebUser() {return this.webUser;}
     public Account getAccount() {return this.account;}
 
-    public static Customer customerFactory(String id, Address address, String phone, String email, WebUser webUser){
+    public static Customer customerFactory(String id, Address address, String phone, String email, WebUser webUser, boolean fromStartUp){
         Customer customer = new Customer(id, address, phone, email, webUser);
 
-//        customer.account = createAccount(customer);
+        if(!fromStartUp)
+            customer.account = createAccount(customer);
 
         return customer;
     }
@@ -29,30 +30,41 @@ public class Customer {
         this.account = null;
     }
 
-//    private static Account createAccount(Customer customer){
-//
-//        Scanner scanner = new Scanner(System.in);
-//        System.out.println("Please enter billing address:");
-//        String billingAddress = scanner.nextLine();
-//        scanner.close();
-//
-//        System.out.println("Are you a Premium Account? Please enter yes/no:");
-//        if(scanner.nextLine().equals("yes"))
-//            return(PremiumAccount.PremiumAccount(customer.id, billingAddress, customer));
-//        else
-//            return(Account.accountFactory(customer.id, billingAddress, customer));
-//    }
+    private static Account createAccount(Customer customer){
+
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Please enter billing address:");
+        String billingAddress = scanner.nextLine();
+
+        System.out.println("Are you a Premium Account? Please enter yes/no:");
+        if(scanner.nextLine().equals("yes")) {
+            return (PremiumAccount.PremiumAccountFactory(customer.id, billingAddress, customer));
+        }
+        else {
+            return (Account.accountFactory(customer.id, billingAddress, customer));
+        }
+    }
 
     public void setAccount(Account account)
     {
-        // TODO: create check if account already connected !!!!!***********
-        this.account=account;
-
+        this.account = account;
     }
 
     public boolean addAccount(Account account){
         if(this.account == null && account != null){
             setAccount(account);
+            return true;
+        }
+        return false;
+    }
+
+    public void setWebUser(WebUser webUser) {
+        this.webUser = webUser;
+    }
+
+    public boolean addWebUser(WebUser newWebUser){
+        if(this.webUser == null && newWebUser != null){
+            setWebUser(newWebUser);
             return true;
         }
         return false;
@@ -88,19 +100,6 @@ public class Customer {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-
-    public void setWebUser(WebUser webUser) {
-        this.webUser = webUser;
-    }
-
-    public boolean addWebUser(WebUser newWebUser){
-        if(this.webUser == null && newWebUser != null){
-            setWebUser(newWebUser);
-            return true;
-        }
-        return false;
     }
 
     public void removeWebUser(){
