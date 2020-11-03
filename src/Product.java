@@ -69,4 +69,16 @@ public class Product {
                 ", name='" + name + '\'' +
                 '}';
     }
+
+    public void delete(){
+        for (LineItem lineItem : lineItemsList) {
+            lineItem.delete();
+        }
+        this.lineItemsList = null;
+        this.supplier.removeProduct(this);
+    }
+
+    public void showDetailsAndConnections() {
+        //TODO: print all attributes and connections
+    }
 }

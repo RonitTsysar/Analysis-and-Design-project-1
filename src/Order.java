@@ -30,6 +30,11 @@ public class Order {
         this.lineItems = new ArrayList<>();
 
     }
+
+    public String getNumber() {
+        return number;
+    }
+
     public void setAccount(Account account) {
         this.account = account;
     }
@@ -87,5 +92,19 @@ public class Order {
 
     public Account getAccount() {
         return account;
+    }
+
+    public void delete() {
+        for (Payment payment : payments) {
+            payment.delete();
+        }
+        this.payments = null;
+        for (LineItem lineItem : lineItems) {
+            lineItem.delete();
+        }
+    }
+
+    public void showDetailsAndConnections() {
+        //TODO: print all attributes and connections
     }
 }

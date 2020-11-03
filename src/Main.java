@@ -5,7 +5,7 @@ public class Main {
 
     static Scanner scanner = new Scanner(System.in);
     static ArrayList<Customer> customersList = new ArrayList<Customer>();
-    static Map<String, WebUser> webUsersList = new HashMap();
+    static Map<String, WebUser> webUsersList = new HashMap(); //key: webUserId
     static Map<String, Supplier> suppliersList = new HashMap<>();//key: supplierName
     static Map<String, Product> productsList = new HashMap<>(); // key: productName , value: Product
     static WebUser activeWebUser;
@@ -53,7 +53,7 @@ public class Main {
                 if (command.equals(""))
                     continue;
 
-                ArrayList<String> command_list = new ArrayList<String>(Arrays.asList(command.split(" ")));
+                ArrayList<String> command_list = new ArrayList<>(Arrays.asList(command.split(" ")));
                 command = command_list.get(0);
                 String type = command_list.get(1);
                 String arg = "";
@@ -65,7 +65,7 @@ public class Main {
                     case "Add":
                         if (type.equals("WebUser")) {
                             while (webUsersList.containsKey(arg)) {
-                                System.out.println("Please choose another id:");
+                                System.out.println("WebUser already exist! Please choose another id: ");
                                 arg = scanner.nextLine();
                             }
                             webUsersList.put(arg, addWebUser(arg));
@@ -78,7 +78,7 @@ public class Main {
                     case "Remove":
                         System.out.println("Remove WebUser");
                         while (!webUsersList.containsKey(arg)) {
-                            System.out.println("Id doesn't exist. Please choose another id:");
+                            System.out.println("WebUser doesn't exist! Please choose another id: ");
                             arg = scanner.nextLine();
                         }
                         removeWebUser(arg);
@@ -118,7 +118,7 @@ public class Main {
                         break;
 
                     case "ShowObjectId ":
-                        System.out.println(" ShowObjectId ");
+                        showObject(type);
                         break;
                 }
             }
@@ -131,29 +131,31 @@ public class Main {
         System.out.println("Please enter password: ");
         String password = scanner.nextLine();
         WebUser webUser = WebUser.webUserFactory(login_id, password, false);
-
+        System.out.println("WebUser Created Successfully!");
         return webUser;
     }
 
     public static void removeWebUser(String login_id) {
         WebUser wuToRemove = webUsersList.get(login_id);
-        webUsersList.remove(login_id);
-        //TODO: add deletions of products/payment/order. check if premiumAccount.
-        if (wuToRemove.getCustomer().getAccount() instanceof PremiumAccount) {
-            for (Product prod : ((PremiumAccount) wuToRemove.getCustomer().getAccount()).getProductsList()) {
-                prod.setPremiumAccount(null);
-            }
-            ((PremiumAccount) wuToRemove.getCustomer().getAccount()).setProducts(null);
-        }
         if (activeWebUser.equals(wuToRemove)) {
             activeWebUser = null;
         }
+        wuToRemove.delete();
+        webUsersList.remove(login_id);
+
+        //TODO: I commented the following code because you don't need to delete products if you delete WebUser!
+//        if (wuToRemove.getCustomer().getAccount() instanceof PremiumAccount) {
+//            for (Product prod : ((PremiumAccount) wuToRemove.getCustomer().getAccount()).getProductsList()) {
+//                prod.setPremiumAccount(null);
+//            }
+//            ((PremiumAccount) wuToRemove.getCustomer().getAccount()).setProducts(null);
+//        }
     }
 
     private static void logoutWebUser(String login_id) {
         // written by Lior.
         if (activeWebUser == null) {
-            System.out.println("Currently no one is logged in");
+            System.out.println("There is no one logged in right now...");
             return;
         }
         WebUser userToLogout = webUsersList.get(login_id);
@@ -216,15 +218,8 @@ public class Main {
             return;
         }
         prod.getSupplier().getProducts().remove(prod);//delete product from supplier product list
+        prod.delete();
         productsList.remove(productName);
-        //when removing product - delete all lineItems connected to him:
-        List lineItemsOfProduct = prod.getLineItemsList();
-        for (Object lineItem : lineItemsOfProduct) {
-            ((LineItem) lineItem).getShoppingCart().getLineItemList().remove(lineItem);
-            ((LineItem) lineItem).getOrder().getLineItems().remove(lineItem);
-        }
-        if (prod.getPremiumAccount() != null)
-            prod.getPremiumAccount().getProductsList().remove(prod);
     }
 
 
@@ -251,10 +246,6 @@ public class Main {
         Product product = new Product(productId, productName, supplier);
         supplier.getProducts().add(product);
         productsList.put(productName, product);
-    }
-
-    private static boolean productExists(String productName) {
-        return productsList.containsKey(productName);
     }
 
 
@@ -344,5 +335,56 @@ public class Main {
                 System.out.println("You choose too much money to pay dude...");
             }
         }
+    }
+
+
+    public static void showObject(String objectId){
+        for (String webUserId : webUsersList.keySet()) {
+            WebUser curWebUser = webUsersList.get(webUserId);
+            if(webUserId.equals(objectId)){
+                curWebUser.showDetailsAndConnections();
+            }
+            else{
+                Customer curCustomer = curWebUser.getCustomer();
+                if(curWebUser.getCustomer().getId().equals(objectId)){
+                    curCustomer.showDetailsAndConnections();
+                }
+                else{
+                    Account curAccount = curCustomer.getAccount();
+                    if(curAccount.getId().equals(objectId)){
+                        curAccount.showDetailsAndConnections();
+                    }
+                    else{
+                        for (Order curOrder : curAccount.getOrders()) {
+                            if(curOrder.getNumber().equals(objectId)){
+                                curOrder.showDetailsAndConnections();
+                            }
+                        }
+                    }
+                    for (Payment curPayment : curAccount.getPayments()) {
+                        if(curPayment.getPaymentId().equals(objectId)){
+                            curPayment.showDetailsAndConnections();
+                        }
+                    }
+                }
+            }
+        }
+        for (String supplierID : suppliersList.keySet()) {
+            Supplier curSupplier = suppliersList.get(supplierID);
+            if(supplierID.equals(objectId)){
+                curSupplier.showDetailsAndConnections();
+            }
+            else{
+                for (Product curProduct : curSupplier.getProducts()) {
+                    if(curProduct.getId().equals(objectId)){
+                        curProduct.showDetailsAndConnections();
+                    }
+                }
+            }
+        }
+    }
+
+    public void showAllObjects(){
+        //todo: implement
     }
 }

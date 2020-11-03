@@ -1,7 +1,6 @@
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Scanner;
 
 public class Account {
 
@@ -38,11 +37,19 @@ public class Account {
         orders = new ArrayList<Order>();
     }
 
+    public String getId() {
+        return id;
+    }
+
     private static ShoppingCart createShoppingCart(Account account) {
         ShoppingCart shoppingCart = ShoppingCart.shoppingCartFactory(account);
         account.shoppingCart = shoppingCart;
 
         return shoppingCart;
+    }
+
+    public List<Payment> getPayments() {
+        return payments;
     }
 
     public void setShoppingCart(ShoppingCart shoppingCart){
@@ -84,5 +91,22 @@ public class Account {
 
     public Customer getCustomer() {
         return customer;
+    }
+
+    public void delete() {
+        if(this.customer != null)
+            this.customer.delete();
+        for (Payment payment : payments) {
+            payment.delete();
+        }
+        this.payments = null;
+        for (Order order : orders) {
+            order.delete();
+        }
+        this.orders = null;
+    }
+
+    public void showDetailsAndConnections() {
+        //TODO: print all attributes and connections
     }
 }
