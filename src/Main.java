@@ -1,57 +1,54 @@
 import java.util.*;
 
-import static java.lang.Integer.parseInt;
-
-
 
 public class Main {
 
     static Scanner scanner = new Scanner(System.in);
     static ArrayList<Customer> customersList = new ArrayList<Customer>();
     static Map<String, WebUser> webUsersList = new HashMap();
-    static Map<String, Supplier> suppliersList = new HashMap<>();
+    static Map<String, Supplier> suppliersList = new HashMap<>();//key: supplierName
     static Map<String, Product> productsList = new HashMap<>(); // key: productName , value: Product
-    static Account activeAccount;
+    static WebUser activeWebUser;
 
-    public static void SystemStartUp()
-    {
+    public static void SystemStartUp() {
         Supplier mosheSupplier = new Supplier("123", "Moshe");
-        suppliersList.put(mosheSupplier.getId(), mosheSupplier);
+        suppliersList.put(mosheSupplier.getName(), mosheSupplier);
 
         Product bambaProduct = new Product("Bamba", "Bamba", mosheSupplier);
+        mosheSupplier.getProducts().add(bambaProduct);
         productsList.put(bambaProduct.getId(), bambaProduct);
 
         Product ramenProduct = new Product("Ramen", "Ramen", mosheSupplier);
+        mosheSupplier.getProducts().add(ramenProduct);
         productsList.put(ramenProduct.getId(), ramenProduct);
 
         //WebUser dani
-        WebUser daniWU = WebUser.webUserFactory("Dani","Dani123", true);
-        Customer daniCustomer = Customer.customerFactory(null , null, null, null, daniWU, true);
+        WebUser daniWU = WebUser.webUserFactory("Dani", "Dani123", true);
+        Customer daniCustomer = Customer.customerFactory(null, null, null, null, daniWU, true);
         daniWU.addCustomer(daniCustomer);
-        Account daniAccount = Account.accountFactory("Dani",null, daniCustomer);
+        Account daniAccount = Account.accountFactory("Dani", null, daniCustomer);
         daniCustomer.addAccount(daniAccount);
 
         //WebUser Dana
-        WebUser danaWU = WebUser.webUserFactory("Dana","Dana123", true);
-        Customer danaCustomer = Customer.customerFactory(null , null, null, null, danaWU, true);
+        WebUser danaWU = WebUser.webUserFactory("Dana", "Dana123", true);
+        Customer danaCustomer = Customer.customerFactory(null, null, null, null, danaWU, true);
         danaWU.setCustomer(danaCustomer);
-        PremiumAccount danaAccount = PremiumAccount.PremiumAccountFactory("Dana",null, danaCustomer);
+        PremiumAccount danaAccount = PremiumAccount.PremiumAccountFactory("Dana", null, danaCustomer);
         danaCustomer.addAccount(danaAccount);
 
         webUsersList.put("Dana", danaWU);
         webUsersList.put("Dani", daniWU);
-        danaAccount.getProducts().add(bambaProduct);
+        danaAccount.getProductsList().add(bambaProduct);
         bambaProduct.setPremiumAccount(danaAccount);
     }
 
-    public static void main(String[] args) 
-    {
+    public static void main(String[] args) {
         SystemStartUp();
         boolean stopProgram = false;
 
-        try{
-            while (true)
-            {
+        try {
+            while (true) {
+                System.out.println("Please enter command: ");
                 String command = scanner.nextLine();
                 if (command.equals(""))
                     continue;
@@ -61,19 +58,18 @@ public class Main {
                 String type = command_list.get(1);
                 String arg = "";
 
-                if(command_list.size() > 2)
+                if (command_list.size() > 2)
                     arg = command_list.get(2);
 
                 switch (command) {
                     case "Add":
                         if (type.equals("WebUser")) {
-                            while(webUsersList.containsKey(arg)) {
+                            while (webUsersList.containsKey(arg)) {
                                 System.out.println("Please choose another id:");
                                 arg = scanner.nextLine();
                             }
                             webUsersList.put(arg, addWebUser(arg));
-                        }
-                        else if (type.equals("Product")){
+                        } else if (type.equals("Product")) {
                             System.out.println("Add Product");
                             addProduct();
                         }
@@ -81,7 +77,7 @@ public class Main {
 
                     case "Remove":
                         System.out.println("Remove WebUser");
-                        while(!webUsersList.containsKey(arg)){
+                        while (!webUsersList.containsKey(arg)) {
                             System.out.println("Id doesn't exist. Please choose another id:");
                             arg = scanner.nextLine();
                         }
@@ -126,13 +122,12 @@ public class Main {
                         break;
                 }
             }
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             scanner.close();
         }
     }
 
-    public static WebUser addWebUser(String login_id){
+    public static WebUser addWebUser(String login_id) {
         System.out.println("Please enter password: ");
         String password = scanner.nextLine();
         WebUser webUser = WebUser.webUserFactory(login_id, password, false);
@@ -140,77 +135,95 @@ public class Main {
         return webUser;
     }
 
-    public static void removeWebUser(String login_id){
-//        if(login_id.equals("Dana") || login_id.equals("Dani")){
-//
-//        }
-
+    public static void removeWebUser(String login_id) {
+        WebUser wuToRemove = webUsersList.get(login_id);
         webUsersList.remove(login_id);
         //TODO: add deletions of products/payment/order. check if premiumAccount.
+        if (wuToRemove.getCustomer().getAccount() instanceof PremiumAccount) {
+            for (Product prod : ((PremiumAccount) wuToRemove.getCustomer().getAccount()).getProductsList()) {
+                prod.setPremiumAccount(null);
+            }
+            ((PremiumAccount) wuToRemove.getCustomer().getAccount()).setProducts(null);
+        }
+        if (activeWebUser.equals(wuToRemove)) {
+            activeWebUser = null;
+        }
     }
 
-    private static void logoutWebUser(String login_id){
+    private static void logoutWebUser(String login_id) {
         // written by Lior.
-        WebUser tmpUser = null;
-        for (WebUser wu : webUsersList.values()) {
-            if(wu.getLogin_id().equals(login_id))
-            {
-                tmpUser = wu;
-            }
+        if (activeWebUser == null) {
+            System.out.println("Currently no one is logged in");
+            return;
         }
-        Account account = tmpUser.getCustomer().getAccount();
-        if(activeAccount.equals(account)) {
-            activeAccount = null;
-            tmpUser.setState(UserState.Blocked);//i assume Blocked=LoggedOut
+        WebUser userToLogout = webUsersList.get(login_id);
+        if (userToLogout == null) {
+            System.out.println("User not exist");
+            return;
         }
-        else
-            System.out.println("User with id: "+login_id+" is not currently logged in");
+        if (activeWebUser.equals(userToLogout)) {
+            activeWebUser = null;
+            userToLogout.setState(UserState.Blocked);//i assume Blocked=LoggedOut
+        } else {
+            System.out.println("WebUser with id: " + login_id + " is not currently logged in");
+            System.out.println("WebUser logged in id is: " + activeWebUser.getLogin_id());
+        }
     }
 
     private static void loginWebUser(String login_id) {
         // written by Lior
-        String webUserPassword = null;
-        WebUser tmpUser = null;
-        for (WebUser wu : webUsersList.values()) {
-            if(wu.getLogin_id().equals(login_id))
-            {
-                webUserPassword = wu.getPassword();
-                tmpUser = wu;
-            }
+        if (activeWebUser != null)
+            logoutWebUser(activeWebUser.getLogin_id());//auto logout
+        WebUser userToLogin = webUsersList.get(login_id);
+        if (userToLogin == null) {
+            System.out.println("WebUser doesn't exist");
+            return;
         }
-        //TODO: decide if we want to check first if user exist (in my opinion its useless) - lior
+        String webUserPassword = userToLogin.getPassword();
         System.out.println("Please enter password:");
         String typedPassword = scanner.nextLine();
-        if(!typedPassword.equals(webUserPassword)){
+        if (!typedPassword.equals(webUserPassword)) {
             System.out.println("Password incorrect");
             return;
         }
-        activeAccount=tmpUser.getCustomer().getAccount();
-        tmpUser.setState(UserState.Active);
-        System.out.println("user "+login_id+" logged in successfully");
+        activeWebUser = userToLogin;
+        userToLogin.setState(UserState.Active);
+        System.out.println("WebUser " + login_id + " logged in successfully");
     }
 
 
-    private static void linkProduct(String productName){
+    private static void linkProduct(String productName) {
         // written by lior
-        if(activeAccount instanceof PremiumAccount){
-            ((PremiumAccount) activeAccount).getProductsList().add(productsList.get(productName));
+        if (activeWebUser == null) {
+            System.out.println("Please Login first");
+            return;
+        }
+        Product prodToLink = productsList.get(productName);
+        if (activeWebUser.getCustomer().getAccount() instanceof PremiumAccount && prodToLink != null) {
+            ((PremiumAccount) activeWebUser.getCustomer().getAccount()).getProductsList().add(prodToLink);
+            prodToLink.setPremiumAccount((PremiumAccount) activeWebUser.getCustomer().getAccount());
+        } else {
+            System.out.println("Aborting: Active user is not premium or product doesn't exist");
         }
 
     }
 
-    private static void deleteProduct(String productName){
+    private static void deleteProduct(String productName) {
         //changed by Lior
         Product prod = productsList.get(productName);
+        if (prod == null) {
+            System.out.println("product doesn't exist");
+            return;
+        }
         prod.getSupplier().getProducts().remove(prod);//delete product from supplier product list
         productsList.remove(productName);
         //when removing product - delete all lineItems connected to him:
         List lineItemsOfProduct = prod.getLineItemsList();
         for (Object lineItem : lineItemsOfProduct) {
-            ((LineItem)lineItem).getShoppingCart().getLineItemList().remove(lineItem);
-            ((LineItem)lineItem).getOrder().getLineItems().remove(lineItem);
+            ((LineItem) lineItem).getShoppingCart().getLineItemList().remove(lineItem);
+            ((LineItem) lineItem).getOrder().getLineItems().remove(lineItem);
         }
-        if(prod.getPremiumAccount() != null)
+        if (prod.getPremiumAccount() != null)
             prod.getPremiumAccount().getProductsList().remove(prod);
     }
 
@@ -218,12 +231,21 @@ public class Main {
     private static void addProduct() {
         System.out.println("Please enter product name:");
         String productName = scanner.nextLine();
-        while(productExists(productName)){
+        Product prodToAdd = productsList.get(productName);
+        while (prodToAdd != null) {
             System.out.println("Product name already exists. enter another name:");
             productName = scanner.nextLine();
+            prodToAdd = productsList.get(productName);
         }
         System.out.println("Please enter supplier name:");
-        Supplier supplier = checkSupplier(scanner.nextLine());
+        String supplierName = scanner.nextLine();
+        Supplier supplier = suppliersList.get(supplierName);
+        if (supplier == null) {
+            System.out.println("Enter supplier ID: ");
+            String supId = scanner.nextLine();
+            supplier = new Supplier(supId, supplierName);
+            suppliersList.put(supId, supplier);
+        }
         System.out.println("please enter product id:");
         String productId = scanner.nextLine();
         Product product = new Product(productId, productName, supplier);
@@ -235,24 +257,10 @@ public class Main {
         return productsList.containsKey(productName);
     }
 
-    private static Supplier checkSupplier(String supplierId) {
-        if(suppliersList.containsKey(supplierId))
-            return suppliersList.get(supplierId);
-
-        System.out.println("Please enter supplier's name:");
-            String supplierName = scanner.nextLine();
-
-        Supplier supplier = new Supplier(supplierId, supplierName);
-        suppliersList.put(supplierId, supplier);
-
-        return supplier;
-
-    }
-
 
     // Dana & Roy
     public static void makeOrder() {
-        Order newOrder = new Order(activeAccount);
+        Order newOrder = new Order(activeWebUser.getCustomer().getAccount());
         System.out.println("Please Enter Seller's User Name: ");
         String login_id = scanner.nextLine();
         WebUser sellerWebUser = null;
@@ -269,7 +277,7 @@ public class Main {
 
         // choosing products
         boolean finishOrder = false;
-        while(!finishOrder){
+        while (!finishOrder) {
             System.out.println("Please type the product ID you want");
             String productID = scanner.nextLine();
             assert sellerWebUser != null;
@@ -288,16 +296,16 @@ public class Main {
             System.out.println("Please press your choice number.");
             int chosenOption = scanner.nextInt();
             LineItem newItem = chosenProduct.getLineItemsList().get(chosenOption - 1);
-            activeAccount.getShoppingCart().addLineItem(newItem);
+            activeWebUser.getCustomer().getAccount().getShoppingCart().addLineItem(newItem);
             newOrder.addLineItem(newItem);
             System.out.println("Do you want to choose another product? y/n");
             String answer = scanner.nextLine();
-            if(answer.equals("y")){
+            if (answer.equals("y")) {
                 finishOrder = true;
             }
         }
         newOrder.setOrdered(new Date());
-        String shippingAddress = activeAccount.getBilling_address();
+        String shippingAddress = activeWebUser.getCustomer().getAccount().getBilling_address();
         newOrder.setShip_to(new Address(shippingAddress));
         System.out.println("Order Created");
 
@@ -307,23 +315,22 @@ public class Main {
         int paymentType = scanner.nextInt();
 
         float totalToBePayed = newOrder.getTotal();
-        while(totalToBePayed > 0){
+        while (totalToBePayed > 0) {
             System.out.println("Please Enter the sum you want to pay from the total of: " + totalToBePayed);
             int partOfPay = scanner.nextInt();
-            if(partOfPay <= newOrder.getTotal()){
+            if (partOfPay <= newOrder.getTotal()) {
                 totalToBePayed -= partOfPay;
 
-                if(paymentType == 1){
+                if (paymentType == 1) {
                     ImmediatePayment newImmediatePayment = new ImmediatePayment(partOfPay);
                     System.out.println("Do you want a phone confirmation ? y/n");
                     String phoneCofirmAns = scanner.nextLine();
                     boolean phoneConfirmation = false;
-                    if(phoneCofirmAns.equals("y"))
+                    if (phoneCofirmAns.equals("y"))
                         phoneConfirmation = true;
                     newImmediatePayment.setPhoneConfirmation(phoneConfirmation);
                     newOrder.addPayment(newImmediatePayment);
-                }
-                else if(paymentType == 2){
+                } else if (paymentType == 2) {
                     DelayedPayment newDelayedPayment = new DelayedPayment(partOfPay);
                     System.out.println("Please Enter the payment date in this format: <year(2 numbers)>,<month(0-11)>,<day(1-31)>");
                     String chosenDateStr = scanner.nextLine();
@@ -333,8 +340,7 @@ public class Main {
                     newDelayedPayment.setPaymentDate(date);
                     newOrder.addPayment(newDelayedPayment);
                 }
-            }
-            else{
+            } else {
                 System.out.println("You choose too much money to pay dude...");
             }
         }

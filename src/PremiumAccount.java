@@ -14,7 +14,7 @@ public class PremiumAccount extends Account {
 
     private PremiumAccount(String id, String billingAddress, Customer customer){
         super(id, billingAddress, customer);
-
+        this.setShoppingCart(ShoppingCart.shoppingCartFactory(this));
         this.products = new ArrayList<>();
     }
 
@@ -22,27 +22,9 @@ public class PremiumAccount extends Account {
         return this.products;
     }
 
-    @Override
-    public List<Product> getProducts() {
-        return products;
-    }
+
 
     public void setProducts(List<Product> products) {
         this.products = products;
     }
-
-    @Override
-    public boolean isPremium() {
-        return true;
-    }
-
-    @Override
-    public void displayProductsToSell(){
-        System.out.println("Here are the Products you can buy: ");
-        for (Product product : products) {
-            System.out.println(product);
-        }
-    }
-
-
 }
