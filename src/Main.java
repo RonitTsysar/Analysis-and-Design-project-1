@@ -256,9 +256,9 @@ public class Main {
         System.out.println("Please Enter Seller's User Name: ");
         String login_id = scanner.nextLine();
         WebUser sellerWebUser = null;
-        for (WebUser webUser : webUsersList) {
-            if (webUser.getLogin_id().equals(login_id) && webUser.getCustomer().getAccount().isPremium()) {
-                sellerWebUser = webUser;
+        for (String webUserID : webUsersList.keySet()) {
+            if (webUserID.equals(login_id) && webUsersList.get(webUserID).getCustomer().getAccount().isPremium()) {
+                sellerWebUser = webUsersList.get(webUserID);
             } else {
                 throw new RuntimeException("Seller not found");
             }
