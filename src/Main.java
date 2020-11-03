@@ -26,6 +26,8 @@ public class Main {
         if(!customer.addAccount(account))
             throw new RuntimeException("Linking Customer to Account failed.");
 
+        //TODO: check for the shopping cart if created
+
         return webUser;
     }
 
