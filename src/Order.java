@@ -107,4 +107,19 @@ public class Order {
     public void showDetailsAndConnections() {
         //TODO: print all attributes and connections
     }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "number='" + number + '\'' +
+                ", ordered=" + ordered +
+                ", shipped=" + shipped +
+                ", ship_to=" + ship_to +
+                ", status=" + status +
+                ", total=" + total +
+                ", account=" + account +
+                ", payments=" + payments +
+                ", lineItems=" + lineItems +
+                '}';
+    }
 }

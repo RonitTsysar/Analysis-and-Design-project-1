@@ -96,11 +96,12 @@ public class Main {
 
                     case "Make":
                         System.out.println("Make order");
-                        //todo: makeOrder()
+                        makeOrder();
                         break;
 
                     case "Display":
                         System.out.println("Display order");
+                        displayLastOrderOfActiveUser();
                         break;
 
                     case "Link":
@@ -125,6 +126,10 @@ public class Main {
         } catch (Exception e) {
             scanner.close();
         }
+    }
+
+    private static void displayLastOrderOfActiveUser() {
+        activeWebUser.getCustomer().getAccount().showLastOrder();
     }
 
     public static WebUser addWebUser(String login_id) {
@@ -298,7 +303,9 @@ public class Main {
         newOrder.setOrdered(new Date());
         String shippingAddress = activeWebUser.getCustomer().getAccount().getBilling_address();
         newOrder.setShip_to(new Address(shippingAddress));
+        activeWebUser.getCustomer().getAccount().setLastOrder(newOrder);
         System.out.println("Order Created");
+
 
 
         // payment

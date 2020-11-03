@@ -12,6 +12,7 @@ public class Account {
     private int balance;
     private Customer customer;
     private ShoppingCart shoppingCart;
+    private Order lastOrder;
 
     private List<Payment> payments;
 
@@ -35,6 +36,14 @@ public class Account {
         this.customer = customer;
         payments = new ArrayList<Payment>();
         orders = new ArrayList<Order>();
+    }
+
+    public Order getLastOrder() {
+        return lastOrder;
+    }
+
+    public void setLastOrder(Order lastOrder) {
+        this.lastOrder = lastOrder;
     }
 
     public String getId() {
@@ -108,5 +117,9 @@ public class Account {
 
     public void showDetailsAndConnections() {
         //TODO: print all attributes and connections
+    }
+
+    public void showLastOrder() {
+        System.out.println(this.lastOrder);
     }
 }
