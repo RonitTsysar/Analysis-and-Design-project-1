@@ -85,43 +85,38 @@ public class Main {
                         break;
 
                     case "Login":
-                        System.out.println("Login WebUser");
                         loginWebUser(arg);
                         break;
 
                     case "Logout":
-                        System.out.println(" Logout WebUser ");
                         logoutWebUser(arg);
                         break;
 
                     case "Make":
-                        System.out.println("Make order");
                         makeOrder();
                         break;
 
                     case "Display":
-                        System.out.println("Display order");
                         displayLastOrderOfActiveUser();
                         break;
 
                     case "Link":
-                        System.out.println(" Link Product ");
                         linkProduct(arg);
                         break;
 
                     case "Delete":
-                        System.out.println(" Delete Product ");
                         deleteProduct(arg);
                         break;
 
                     case "ShowAllObjects":
-                        System.out.println(" ShowAllObjects ");
+                        showAllObjects();
                         break;
 
                     case "ShowObjectId ":
                         showObject(type);
                         break;
                 }
+
             }
         } catch (Exception e) {
             scanner.close();
@@ -129,7 +124,11 @@ public class Main {
     }
 
     private static void displayLastOrderOfActiveUser() {
-        activeWebUser.getCustomer().getAccount().showLastOrder();
+        if(activeWebUser.getCustomer().getAccount().getLastOrder() != null)
+            activeWebUser.getCustomer().getAccount().showLastOrder();
+        else{
+            System.out.println("No Orders made by current user...");
+        }
     }
 
     public static WebUser addWebUser(String login_id) {
@@ -187,11 +186,16 @@ public class Main {
             return;
         }
         String webUserPassword = userToLogin.getPassword();
-        System.out.println("Please enter password:");
-        String typedPassword = scanner.nextLine();
-        if (!typedPassword.equals(webUserPassword)) {
-            System.out.println("Password incorrect");
-            return;
+        boolean passwordCorrect = false;
+        while(!passwordCorrect){
+            System.out.println("Please enter password:");
+            String typedPassword = scanner.nextLine();
+            if (!typedPassword.equals(webUserPassword)) {
+                System.out.println("Password incorrect, Please try again!");
+            }
+            else{
+                passwordCorrect = true;
+            }
         }
         activeWebUser = userToLogin;
         userToLogin.setState(UserState.Active);
@@ -206,9 +210,9 @@ public class Main {
             return;
         }
         Product prodToLink = productsList.get(productName);
-        if (activeWebUser.getCustomer().getAccount() instanceof PremiumAccount && prodToLink != null) {
-            ((PremiumAccount) activeWebUser.getCustomer().getAccount()).getProductsList().add(prodToLink);
-            prodToLink.setPremiumAccount((PremiumAccount) activeWebUser.getCustomer().getAccount());
+        Account curActiveAccount = activeWebUser.getCustomer().getAccount();
+        if (curActiveAccount instanceof PremiumAccount && prodToLink != null) {
+            ((PremiumAccount)curActiveAccount).addProduct(prodToLink);
         } else {
             System.out.println("Aborting: Active user is not premium or product doesn't exist");
         }
@@ -251,6 +255,8 @@ public class Main {
         Product product = new Product(productId, productName, supplier);
         supplier.getProducts().add(product);
         productsList.put(productName, product);
+
+        //TODO: ask to enter line items of this product and link them to the product
     }
 
 
@@ -263,6 +269,7 @@ public class Main {
         for (String webUserID : webUsersList.keySet()) {
             if (webUserID.equals(login_id) && webUsersList.get(webUserID).getCustomer().getAccount().isPremium()) {
                 sellerWebUser = webUsersList.get(webUserID);
+                break;
             } else {
                 throw new RuntimeException("Seller not found");
             }
@@ -391,7 +398,7 @@ public class Main {
         }
     }
 
-    public void showAllObjects(){
+    public static void showAllObjects(){
         //todo: implement
     }
 }

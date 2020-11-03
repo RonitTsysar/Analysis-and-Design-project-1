@@ -28,8 +28,12 @@ public class Product {
     }
 
     public void showLineItems(){
-        for (LineItem lineItem : lineItemsList) {
-            System.out.println(lineItemsList.indexOf(lineItem)+1 + ". "  + "Quantity: " +lineItem.getQuantity() + "Price per Item: " + lineItem.getPrice());
+        if(this.lineItemsList.size() < 1)
+            System.out.println("No Line Items of this product");
+        else{
+            for (LineItem lineItem : lineItemsList) {
+                System.out.println(lineItemsList.indexOf(lineItem)+1 + ". "  + "Quantity: " +lineItem.getQuantity() + "Price per Item: " + lineItem.getPrice());
+            }
         }
     }
 
