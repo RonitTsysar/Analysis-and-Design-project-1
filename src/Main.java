@@ -1,5 +1,8 @@
 import java.util.*;
 
+import static java.lang.Integer.parseInt;
+
+
 
 public class Main {
 
@@ -246,72 +249,94 @@ public class Main {
 
     }
 
-    public static void makeOrder(){
-        System.out.println("Please Enter UserName (login_id): ");
+
+    // Dana & Roy
+    public static void makeOrder() {
+        Order newOrder = new Order(activeAccount);
+        System.out.println("Please Enter Seller's User Name: ");
         String login_id = scanner.nextLine();
-        WebUser curWebUser = null;
-        for (WebUser webUser : webUsersList.values()) {
-            if(webUser.getLogin_id().equals(login_id)){
-                curWebUser = webUser;
-            }
-            else{
-                throw new RuntimeException("User not found");
+        WebUser sellerWebUser = null;
+        for (WebUser webUser : webUsersList) {
+            if (webUser.getLogin_id().equals(login_id) && webUser.getCustomer().getAccount().isPremium()) {
+                sellerWebUser = webUser;
+            } else {
+                throw new RuntimeException("Seller not found");
             }
         }
-        if(curWebUser != null)
-            curWebUser.displayOwnedItems();
-        System.out.println("Please enter the Order Number");
-        String orderNum = scanner.nextLine();
-        System.out.println("Do You want to continue to the Products List?  Y/N");
-        String cmd = scanner.nextLine();
-        if(!cmd.equals("Y")) {
-            return;
-        }
-        else{
-            for (String productID : productsList.keySet()) {
-                System.out.println(productsList.get(productID));
-            }
+        // display products to sell
+        if (sellerWebUser != null)
+            sellerWebUser.getCustomer().getAccount().displayProductsToSell();
+
+        // choosing products
+        boolean finishOrder = false;
+        while(!finishOrder){
             System.out.println("Please type the product ID you want");
             String productID = scanner.nextLine();
-            Product chosenProduct = productsList.get(productID);
+            assert sellerWebUser != null;
+            List<Product> productsListFromSeller = sellerWebUser.getCustomer().getAccount().getProducts();
+            Product chosenProduct = null;
+            for (Product product : productsListFromSeller) {
+                if (product.getId().equals(productID)) {
+                    chosenProduct = product;
+                }
+            }
             if (chosenProduct == null)
                 throw new RuntimeException("Product not found");
-            System.out.println("Showing you the LineItems od this product");
-            for (LineItem lineItem : productsList.get(productID).getLineItemsList()) {
-                System.out.println(lineItem);
-            }
-            //todo: check about line item
-            System.out.println("Please enter the QUANTITY you want");
-            String quantity = scanner.nextLine();
-            //TODO: CREATE NEW LINE ITEMS FOR EACH PRODUCT AND QUANTITY
-            // TODO: CREATE NEW ORDER THAT CONTAINS ALL THE ITEMS
-            Date orderDate = new Date();
-            Date shippedDate = null;
-            System.out.println("Please enter shipping Address");
-            String shippingAddress = scanner.nextLine();
-            Address ship_toAddress= new Address(shippingAddress);
-            //todo: multiple the QUANTITY*PRICE - from the lineITEM attributes
-            float total = Float.parseFloat(quantity);
-            Order newOrder = new Order(orderNum, orderDate, shippedDate, ship_toAddress, OrderStatus.New, total, activeAccount);
-            //Order was created for the account
 
-            System.out.println("How do you want to pay - Immediate Payment/ Delayed Payment ?  Please enter 1-Immediate or 2-Delayed");
-            String paymentType = scanner.nextLine();
-            System.out.println("Please enter PaymentID");
-            String paymentID = scanner.nextLine();
-            System.out.println("Do you want a phone confirmation ? y/n");
-            String phoneCofirmAns = scanner.nextLine();
-            boolean phoneConfirmation = false;
-            if(phoneCofirmAns.equals("y"))
-                phoneConfirmation = true;
-            if (paymentType.equals("1")){
-                newOrder.addImmediatePayment(paymentID, new Date(), total, null, phoneConfirmation);
+            System.out.println("Here are the options for this product: ");
+            chosenProduct.showLineItems();
+            System.out.println("Please press your choice number.");
+            int chosenOption = scanner.nextInt();
+            LineItem newItem = chosenProduct.getLineItemsList().get(chosenOption - 1);
+            activeAccount.getShoppingCart().addLineItem(newItem);
+            newOrder.addLineItem(newItem);
+            System.out.println("Do you want to choose another product? y/n");
+            String answer = scanner.nextLine();
+            if(answer.equals("y")){
+                finishOrder = true;
+            }
+        }
+        newOrder.setOrdered(new Date());
+        String shippingAddress = activeAccount.getBilling_address();
+        newOrder.setShip_to(new Address(shippingAddress));
+        System.out.println("Order Created");
+
+
+        // payment
+        System.out.println("How do you want to pay -\nImmediate Payment/ Delayed Payment ?\nPlease enter 1-Immediate or 2-Delayed");
+        int paymentType = scanner.nextInt();
+
+        float totalToBePayed = newOrder.getTotal();
+        while(totalToBePayed > 0){
+            System.out.println("Please Enter the sum you want to pay from the total of: " + totalToBePayed);
+            int partOfPay = scanner.nextInt();
+            if(partOfPay <= newOrder.getTotal()){
+                totalToBePayed -= partOfPay;
+
+                if(paymentType == 1){
+                    ImmediatePayment newImmediatePayment = new ImmediatePayment(partOfPay);
+                    System.out.println("Do you want a phone confirmation ? y/n");
+                    String phoneCofirmAns = scanner.nextLine();
+                    boolean phoneConfirmation = false;
+                    if(phoneCofirmAns.equals("y"))
+                        phoneConfirmation = true;
+                    newImmediatePayment.setPhoneConfirmation(phoneConfirmation);
+                    newOrder.addPayment(newImmediatePayment);
+                }
+                else if(paymentType == 2){
+                    DelayedPayment newDelayedPayment = new DelayedPayment(partOfPay);
+                    System.out.println("Please Enter the payment date in this format: <year(2 numbers)>,<month(0-11)>,<day(1-31)>");
+                    String chosenDateStr = scanner.nextLine();
+                    String[] splitDate = chosenDateStr.split(",");
+                    //TODO: CHECK ABOUT MONTHS - JANU ......
+                    Date date = new Date();
+                    newDelayedPayment.setPaymentDate(date);
+                    newOrder.addPayment(newDelayedPayment);
+                }
             }
             else{
-                newOrder.addDelayedPayment(paymentID, new Date(), total, null, new Date());
+                System.out.println("You choose too much money to pay dude...");
             }
-            newOrder.setAccount(activeAccount);
-      }
-//
-  }
+        }
+    }
 }

@@ -15,8 +15,8 @@ public class Account {
     private ShoppingCart shoppingCart;
 
     private List<Payment> payments;
-    private List<Order> orders;
 
+    private List<Order> orders;
     public static Account accountFactory(String id, String billingAddress, Customer customer){
         Account account = new Account(id, billingAddress, customer);
         account.shoppingCart = createShoppingCart(account);
@@ -63,6 +63,23 @@ public class Account {
 
     public ShoppingCart getShoppingCart() {
         return shoppingCart;
+    }
+
+    public boolean isPremium(){
+        return false;
+    }
+
+    public void displayProductsToSell(){
+        System.out.println("I can't sell anything because I'm not a Premium account");
+    }
+
+    public List<Product> getProducts(){
+        System.out.println("This Account can't sell Products");
+        return null;
+    }
+
+    public String getBilling_address() {
+        return billing_address;
     }
 
     public Customer getCustomer() {

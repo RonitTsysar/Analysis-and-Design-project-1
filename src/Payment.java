@@ -9,15 +9,21 @@ public abstract class Payment {
 
     private Account account;
     private Order order;
+    private static int idCounter=1;
 
-    public Payment(String id, Date paid, float total, String details, Account account, Order order) {
-        this.paymentId = id;
-        //TODO: check if needed
-        this.paid = paid;
+    public Payment(float total) {
+        this.paymentId = "" + idCounter;
         this.total = total;
-        this.details = details;
-        //until here
-        this.account = account;
+        this.details = "";
+        idCounter++;
+    }
+
+    public void setOrder(Order order) {
         this.order = order;
+        this.account = order.getAccount();
+    }
+
+    public String getPaymentId() {
+        return paymentId;
     }
 }

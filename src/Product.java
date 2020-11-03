@@ -27,6 +27,12 @@ public class Product {
         return id;
     }
 
+    public void showLineItems(){
+        for (LineItem lineItem : lineItemsList) {
+            System.out.println(lineItemsList.indexOf(lineItem)+1 + ". "  + "Quantity: " +lineItem.getQuantity() + "Price per Item: " + lineItem.getPrice());
+        }
+    }
+
     public void setId(String id) {
         this.id = id;
     }
