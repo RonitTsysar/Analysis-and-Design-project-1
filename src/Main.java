@@ -457,7 +457,7 @@ public class Main {
         System.out.println("****** PRODUCTS ******");
         for (String productName : productsList.keySet()) {
             Product product = productsList.get(productName);
-            System.out.println("PRODUCT: "+product.getId());
+            System.out.println("PRODUCT: "+productName);
         }
         System.out.println("****** SUPPLIERS ******");
         for (String supplierName : suppliersList.keySet()) {
