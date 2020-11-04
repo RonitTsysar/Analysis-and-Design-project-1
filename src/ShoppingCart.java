@@ -70,4 +70,14 @@ public class ShoppingCart {
         lineItem.setShoppingCart(this);
         return true;
     }
+
+
+    public void delete() {
+        this.webUser = null;
+        this.account.delete();
+        for (LineItem lineItem : lineItemList) {
+            lineItem.delete();
+        }
+        this.lineItemList = null;
+    }
 }

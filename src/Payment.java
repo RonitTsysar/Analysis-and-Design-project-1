@@ -26,4 +26,12 @@ public abstract class Payment {
     public String getPaymentId() {
         return paymentId;
     }
+
+    public void delete(){
+        this.account = null;
+        this.order = null;
+    }
+
+    public abstract void showDetailsAndConnections();
+
 }

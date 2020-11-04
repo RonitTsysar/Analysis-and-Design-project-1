@@ -116,4 +116,14 @@ public class WebUser {
         }
         return false;
     }
+
+    public void delete() {
+        this.shoppingCart.delete();
+        this.shoppingCart = null;
+    }
+
+
+    public void showDetailsAndConnections() {
+        //TODO: print all attributes and connections
+    }
 }

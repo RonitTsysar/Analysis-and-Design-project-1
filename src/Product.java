@@ -28,8 +28,12 @@ public class Product {
     }
 
     public void showLineItems(){
-        for (LineItem lineItem : lineItemsList) {
-            System.out.println(lineItemsList.indexOf(lineItem)+1 + ". "  + "Quantity: " +lineItem.getQuantity() + "Price per Item: " + lineItem.getPrice());
+        if(this.lineItemsList.size() < 1)
+            System.out.println("No Line Items of this product");
+        else{
+            for (LineItem lineItem : lineItemsList) {
+                System.out.println(lineItemsList.indexOf(lineItem)+1 + ". "  + "Quantity: " +lineItem.getQuantity() + "Price per Item: " + lineItem.getPrice());
+            }
         }
     }
 
@@ -68,5 +72,17 @@ public class Product {
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 '}';
+    }
+
+    public void delete(){
+        for (LineItem lineItem : lineItemsList) {
+            lineItem.delete();
+        }
+        this.lineItemsList = null;
+        this.supplier.removeProduct(this);
+    }
+
+    public void showDetailsAndConnections() {
+        //TODO: print all attributes and connections
     }
 }

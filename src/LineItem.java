@@ -60,4 +60,10 @@ public class LineItem {
             this.order = order;
         throw new RuntimeException("Couldn't connect lineItem to order");
     }
+
+    public void delete() {
+        this.shoppingCart = null;
+        this.order = null;
+        this.product = null;
+    }
 }

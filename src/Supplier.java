@@ -36,4 +36,18 @@ public class Supplier {
     public void setProducts(List<Product> products) {
         this.products = products;
     }
+
+    public boolean removeProduct(Product productToRemove){
+        for (Product product : products) {
+            if(product.getId().equals(productToRemove.getId())){
+                products.remove(product);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void showDetailsAndConnections() {
+        //TODO: print all attributes and connections
+    }
 }

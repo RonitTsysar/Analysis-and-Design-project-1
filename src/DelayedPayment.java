@@ -8,7 +8,14 @@ public class DelayedPayment extends Payment{
         super(total);
     }
 
+    @Override
+    public void showDetailsAndConnections() {
+        //TODO: print all attributes and connections
+    }
+
     public void setPaymentDate(Date paymentDate) {
         this.paymentDate = paymentDate;
     }
+
+
 }

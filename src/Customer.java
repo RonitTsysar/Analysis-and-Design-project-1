@@ -105,4 +105,14 @@ public class Customer {
     public void removeWebUser(){
         this.webUser = null;
     }
+
+    public void delete() {
+        if(this.account != null)
+            this.account.delete();
+        this.webUser.delete();
+    }
+
+    public void showDetailsAndConnections() {
+        //TODO: print all attributes and connections
+    }
 }

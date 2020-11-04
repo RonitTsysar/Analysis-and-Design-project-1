@@ -7,7 +7,15 @@ public class ImmediatePayment extends Payment {
         super(total);
     }
 
+    @Override
+    public void showDetailsAndConnections() {
+        //TODO: print all attributes and connections
+
+    }
+
     public void setPhoneConfirmation(boolean phoneConfirmation) {
         this.phoneConfirmation = phoneConfirmation;
     }
+
+
 }

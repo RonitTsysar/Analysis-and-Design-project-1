@@ -1,7 +1,6 @@
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Scanner;
 
 public class Account {
 
@@ -13,6 +12,7 @@ public class Account {
     private int balance;
     private Customer customer;
     private ShoppingCart shoppingCart;
+    private Order lastOrder;
 
     private List<Payment> payments;
 
@@ -20,7 +20,6 @@ public class Account {
     public static Account accountFactory(String id, String billingAddress, Customer customer){
         Account account = new Account(id, billingAddress, customer);
         account.shoppingCart = createShoppingCart(account);
-
         return account;
     }
 
@@ -38,11 +37,27 @@ public class Account {
         orders = new ArrayList<Order>();
     }
 
+    public Order getLastOrder() {
+        return lastOrder;
+    }
+
+    public void setLastOrder(Order lastOrder) {
+        this.lastOrder = lastOrder;
+    }
+
+    public String getId() {
+        return id;
+    }
+
     private static ShoppingCart createShoppingCart(Account account) {
         ShoppingCart shoppingCart = ShoppingCart.shoppingCartFactory(account);
         account.shoppingCart = shoppingCart;
 
         return shoppingCart;
+    }
+
+    public List<Payment> getPayments() {
+        return payments;
     }
 
     public void setShoppingCart(ShoppingCart shoppingCart){
@@ -84,5 +99,26 @@ public class Account {
 
     public Customer getCustomer() {
         return customer;
+    }
+
+    public void delete() {
+        if(this.customer != null)
+            this.customer.delete();
+        for (Payment payment : payments) {
+            payment.delete();
+        }
+        this.payments = null;
+        for (Order order : orders) {
+            order.delete();
+        }
+        this.orders = null;
+    }
+
+    public void showDetailsAndConnections() {
+        //TODO: print all attributes and connections
+    }
+
+    public void showLastOrder() {
+        System.out.println(this.lastOrder);
     }
 }
