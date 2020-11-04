@@ -48,6 +48,19 @@ public class Supplier {
     }
 
     public void showDetailsAndConnections() {
-        //TODO: print all attributes and connections
+        System.out.println("----------Supplier---------\n *** Attributes: ***");
+        System.out.println("id: "+getId()+"\n"
+                +"name: "+getName()+"\n");
+        System.out.println("*** Connections: ***");
+        System.out.println("Product Names: "+getProductsNamesList()+"\n\n");
+    }
+
+    public String getProductsNamesList() {
+        String productsNames="";
+        if(products==null) return "product list empty";
+        for (Product product:products) {
+            productsNames+=product.getName()+"\n";
+        }
+        return productsNames;
     }
 }

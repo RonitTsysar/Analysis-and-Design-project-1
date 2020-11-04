@@ -105,21 +105,27 @@ public class Order {
     }
 
     public void showDetailsAndConnections() {
-        //TODO: print all attributes and connections
+        System.out.println("---------- Order ---------\n *** Attributes: ***");
+        System.out.println("number: "+number+"\n"
+                +"ordered: "+ordered+"\n"
+                +"shipped: "+shipped+"\n"
+                +"ship to: "+ship_to+"\n"
+                +"status: "+status+"\n"
+                +"total: "+total);
+        System.out.println("*** Connections: ***");
+        System.out.println("Account ID: "+getAccount().getId()+"\n"
+                +"Line Items: "+getLineItemListOf_id_quan_price()+"\n\n");
     }
 
-    @Override
-    public String toString() {
-        return "Order{" +
-                "number='" + number + '\'' +
-                ", ordered=" + ordered +
-                ", shipped=" + shipped +
-                ", ship_to=" + ship_to +
-                ", status=" + status +
-                ", total=" + total +
-                ", account=" + account +
-                ", payments=" + payments +
-                ", lineItems=" + lineItems +
-                '}';
+    public String getLineItemListOf_id_quan_price() {
+        String lineItemsDetails="";
+        if(lineItems==null) return "Line Items list empty";
+        for (LineItem li:lineItems) {
+            lineItemsDetails+="id:"+li.getProduct().getId()+" quantity:"+li.getQuantity()+" price:"+li.getPrice()+"\n";
+        }
+        return lineItemsDetails;
     }
+
+
+
 }

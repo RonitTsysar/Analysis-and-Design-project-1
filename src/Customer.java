@@ -113,6 +113,13 @@ public class Customer {
     }
 
     public void showDetailsAndConnections() {
-        //TODO: print all attributes and connections
+        System.out.println("----------Customer---------\n *** Attributes: ***");
+        System.out.println("id: "+id+"\n"
+                +"address: "+address+"\n"
+                +"phone: "+phone+"\n"
+                +"email: "+email);
+        System.out.println("*** Connections: ***");
+        System.out.println("Account ID: "+account.getId()+"\n"
+                +"Web User Login ID: "+webUser.getLogin_id()+"\n\n");
     }
 }

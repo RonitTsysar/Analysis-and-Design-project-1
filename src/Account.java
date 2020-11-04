@@ -101,6 +101,22 @@ public class Account {
         return customer;
     }
 
+    public boolean getIsClosed() {
+        return is_closed;
+    }
+
+    public Date getOpen() {
+        return open;
+    }
+
+    public Date getClosed() {
+        return closed;
+    }
+
+    public int getBalance() {
+        return balance;
+    }
+
     public void delete() {
         if(this.customer != null)
             this.customer.delete();
@@ -115,10 +131,39 @@ public class Account {
     }
 
     public void showDetailsAndConnections() {
-        //TODO: print all attributes and connections
+        System.out.println("----------Account---------\n *** Attributes: ***");
+        System.out.println("id: "+id+"\n"
+                +"billing_address: "+billing_address+"\n"
+                +"is_closed: "+is_closed+"\n"
+                +"open: "+open+"\n"
+                +"closed: "+closed+"\n"
+                +"balance: "+balance);
+        System.out.println("*** Connections: ***");
+        System.out.println("ShoppingCart Creation date: "+shoppingCart.getCreated()+"\n"
+                +"Payments: "+getPaymentsIdList()+"\n"
+                +"Orders: "+getOrderNumberList()+"\n\n");
+    }
+
+    public String getOrderNumberList() {
+        String ordersNumbers="";
+        if(orders==null) return "order list empty";
+        for (Order order:orders) {
+            ordersNumbers+=order.getNumber()+"\n";
+        }
+        return ordersNumbers;
     }
 
     public void showLastOrder() {
         System.out.println(this.lastOrder);
+    }
+
+    public String getPaymentsIdList()
+    {
+        String paymentsIds="";
+        if(payments==null) return "payment list empty";
+        for (Payment payment:payments) {
+            paymentsIds+=payment.getPaymentId()+"\n";
+        }
+        return paymentsIds;
     }
 }

@@ -80,4 +80,13 @@ public class ShoppingCart {
         }
         this.lineItemList = null;
     }
+//    public void showDetailsAndConnections() {
+//        System.out.println("----------Shopping Cart---------\n *** Attributes: ***");
+//        System.out.println("created: "+created+"\n");
+//        System.out.println("*** Connections: ***");
+//        System.out.println("Account: "+account.getId()+"\n"
+//                +"Web User: "+webUser.getLogin_id()+"\n"
+//                +"Line Items: "+getListOfids()+"\n\n");
+//    }
+
 }

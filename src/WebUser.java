@@ -124,6 +124,12 @@ public class WebUser {
 
 
     public void showDetailsAndConnections() {
-        //TODO: print all attributes and connections
+        System.out.println("----------Web User---------\n *** Attributes: ***");
+        System.out.println("login_id: "+login_id+"\n"
+                            +"password: "+password+"\n"
+                            +"state: "+state);
+        System.out.println("*** Connections: ***");
+        System.out.println("Customer ID: "+customer.getId()+"\n"
+                            +"Shopping Cart Creation Date: "+shoppingCart.getCreated()+"\n\n");
     }
 }

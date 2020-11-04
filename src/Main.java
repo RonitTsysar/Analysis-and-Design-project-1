@@ -14,11 +14,11 @@ public class Main {
         Supplier mosheSupplier = new Supplier("123", "Moshe");
         suppliersList.put(mosheSupplier.getName(), mosheSupplier);
 
-        Product bambaProduct = new Product("Bamba", "Bamba", mosheSupplier);
+        Product bambaProduct = new Product("Bamba", "Bamba", mosheSupplier,5);
         mosheSupplier.getProducts().add(bambaProduct);
         productsList.put(bambaProduct.getId(), bambaProduct);
 
-        Product ramenProduct = new Product("Ramen", "Ramen", mosheSupplier);
+        Product ramenProduct = new Product("Ramen", "Ramen", mosheSupplier,10);
         mosheSupplier.getProducts().add(ramenProduct);
         productsList.put(ramenProduct.getId(), ramenProduct);
 
@@ -56,7 +56,9 @@ public class Main {
 
                 ArrayList<String> command_list = new ArrayList<>(Arrays.asList(command.split(" ")));
                 command = command_list.get(0);
-                String type = command_list.get(1);
+                String type = "";
+                if (command_list.size() > 1)
+                    type = command_list.get(1);
                 String arg = "";
 
                 if (command_list.size() > 2)
@@ -113,7 +115,7 @@ public class Main {
                         showAllObjects();
                         break;
 
-                    case "ShowObjectId ":
+                    case "ShowObjectId":
                         showObject(type);
                         break;
                 }
@@ -253,13 +255,12 @@ public class Main {
         }
         System.out.println("please enter product id:");
         String productId = scanner.nextLine();
-        Product product = new Product(productId, productName, supplier);
+        System.out.println("please enter product price per unit:");
+        float productPrice = Float.parseFloat(scanner.nextLine());
+        Product product = new Product(productId, productName, supplier, productPrice);
         supplier.getProducts().add(product);
         productsList.put(productName, product);
-
-        //TODO: ask to enter line items of this product and link them to the product
     }
-
 
     // Dana & Roy
     public static void makeOrder() {
@@ -328,7 +329,7 @@ public class Main {
                 totalToBePayed -= partOfPay;
 
                 if (paymentType == 1) {
-                    ImmediatePayment newImmediatePayment = new ImmediatePayment(partOfPay);
+                    ImmediatePayment newImmediatePayment = new ImmediatePayment(partOfPay,activeWebUser.getCustomer().getAccount());
                     System.out.println("Do you want a phone confirmation ? y/n");
                     String phoneCofirmAns = scanner.nextLine();
                     boolean phoneConfirmation = false;
@@ -337,7 +338,7 @@ public class Main {
                     newImmediatePayment.setPhoneConfirmation(phoneConfirmation);
                     newOrder.addPayment(newImmediatePayment);
                 } else if (paymentType == 2) {
-                    DelayedPayment newDelayedPayment = new DelayedPayment(partOfPay);
+                    DelayedPayment newDelayedPayment = new DelayedPayment(partOfPay,activeWebUser.getCustomer().getAccount());
                     System.out.println("Please Enter the payment date in this format: <year(2 numbers)>,<month(0-11)>,<day(1-31)>");
                     String chosenDateStr = scanner.nextLine();
                     String[] splitDate = chosenDateStr.split(",");
@@ -354,52 +355,134 @@ public class Main {
 
 
     public static void showObject(String objectId){
-        for (String webUserId : webUsersList.keySet()) {
-            WebUser curWebUser = webUsersList.get(webUserId);
-            if(webUserId.equals(objectId)){
-                curWebUser.showDetailsAndConnections();
-            }
-            else{
-                Customer curCustomer = curWebUser.getCustomer();
-                if(curWebUser.getCustomer().getId().equals(objectId)){
-                    curCustomer.showDetailsAndConnections();
-                }
-                else{
-                    Account curAccount = curCustomer.getAccount();
-                    if(curAccount.getId().equals(objectId)){
-                        curAccount.showDetailsAndConnections();
-                    }
-                    else{
-                        for (Order curOrder : curAccount.getOrders()) {
-                            if(curOrder.getNumber().equals(objectId)){
-                                curOrder.showDetailsAndConnections();
-                            }
-                        }
-                    }
-                    for (Payment curPayment : curAccount.getPayments()) {
-                        if(curPayment.getPaymentId().equals(objectId)){
-                            curPayment.showDetailsAndConnections();
-                        }
-                    }
-                }
-            }
+        //changed by lior
+        Customer c=null;
+        Account a=null;
+//        ShoppingCart sc=null;
+        List<Payment> payments=new ArrayList<>();
+        List<Order> orders=new ArrayList<>();
+        Product prod = productsList.get(objectId);
+        Supplier s=suppliersList.get(objectId);
+        WebUser wu = webUsersList.get(objectId);
+        if(wu != null){
+            wu.showDetailsAndConnections();
+            c=wu.getCustomer();
+            a=c.getAccount();
+            payments=a.getPayments();
+            orders=a.getOrders();
         }
-        for (String supplierID : suppliersList.keySet()) {
-            Supplier curSupplier = suppliersList.get(supplierID);
-            if(supplierID.equals(objectId)){
-                curSupplier.showDetailsAndConnections();
-            }
-            else{
-                for (Product curProduct : curSupplier.getProducts()) {
-                    if(curProduct.getId().equals(objectId)){
-                        curProduct.showDetailsAndConnections();
-                    }
-                }
-            }
+        if(c != null) c.showDetailsAndConnections();
+        if(a != null) a.showDetailsAndConnections();
+        if(prod != null) prod.showDetailsAndConnections();
+        if(s != null) s.showDetailsAndConnections();
+        for (Payment payment:payments) {
+            if(payment.getPaymentId().equals(objectId))
+                payment.showDetailsAndConnections();
         }
+        for (Order order:orders) {
+            if(order.getNumber().equals(objectId))
+                order.showDetailsAndConnections();
+        }
+
+
+
+//        for (String webUserId : webUsersList.keySet()) {
+//            WebUser curWebUser = webUsersList.get(webUserId);
+//            if(webUserId.equals(objectId)){
+//                curWebUser.showDetailsAndConnections();
+//            }
+//            else{
+//                Customer curCustomer = curWebUser.getCustomer();
+//                if(curWebUser.getCustomer().getId().equals(objectId)){
+//                    curCustomer.showDetailsAndConnections();
+//                }
+//                else{
+//                    Account curAccount = curCustomer.getAccount();
+//                    if(curAccount.getId().equals(objectId)){
+//                        curAccount.showDetailsAndConnections();
+//                    }
+//                    else{
+//                        for (Order curOrder : curAccount.getOrders()) {
+//                            if(curOrder.getNumber().equals(objectId)){
+//                                curOrder.showDetailsAndConnections();
+//                            }
+//                        }
+//                    }
+//                    for (Payment curPayment : curAccount.getPayments()) {
+//                        if(curPayment.getPaymentId().equals(objectId)){
+//                            curPayment.showDetailsAndConnections();
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//        for (String supplierID : suppliersList.keySet()) {
+//            Supplier curSupplier = suppliersList.get(supplierID);
+//            if(supplierID.equals(objectId)){
+//                curSupplier.showDetailsAndConnections();
+//            }
+//            else{
+//                for (Product curProduct : curSupplier.getProducts()) {
+//                    if(curProduct.getId().equals(objectId)){
+//                        curProduct.showDetailsAndConnections();
+//                    }
+//                }
+//            }
+//        }
     }
 
     public static void showAllObjects(){
-        //todo: implement
+        ArrayList<Customer> customers = new ArrayList<>();
+        ArrayList<Account> accounts = new ArrayList<>();
+        ArrayList<ShoppingCart> shoppingCarts = new ArrayList<>();
+        ArrayList<LineItem> lineItems = new ArrayList<>();
+
+        System.out.println("****** WEB USERS ******");
+        for (String webUserId : webUsersList.keySet()) {
+            WebUser curWebUser = webUsersList.get(webUserId);
+            System.out.println("Login ID: "+curWebUser.getLogin_id()+" Password: "+curWebUser.getPassword());
+            //collect other derived data:
+            accounts.add(curWebUser.getCustomer().getAccount());
+            customers.add(curWebUser.getCustomer());
+            shoppingCarts.add(curWebUser.getCustomer().getAccount().getShoppingCart());
+        }
+        System.out.println("****** CUSTOMERS ******");
+        for (Customer customer:customers) {
+            System.out.println("ID: "+customer.getId()+" Address: "+customer.getAddress());
+        }
+        System.out.println("****** ACCOUNTS ******");
+        for (Account account:accounts) {
+            System.out.println("ID: "+account.getId()+" Premium: "+account.isPremium());
+        }
+        System.out.println("****** SHOPPING CARTS ******");
+        for (ShoppingCart sc:shoppingCarts) {
+            System.out.println("Owner Name: "+sc.getWebUser().getLogin_id()+" Created: "+sc.getCreated());
+
+        }
+        System.out.println("****** PRODUCTS ******");
+        for (String productName : productsList.keySet()) {
+            Product product = productsList.get(productName);
+            System.out.println("Product ID: "+product.getId()+" Name: "+productName);
+        }
+        System.out.println("****** SUPPLIERS ******");
+        for (String supplierName : suppliersList.keySet()) {
+            Supplier supplier = suppliersList.get(supplierName);
+            System.out.println("ID: "+supplier.getId()+" Name: "+supplierName);
+        }
+        System.out.println("****** ORDERS ******");
+        for (Account a : accounts) {
+            for (Order o:a.getOrders()) {
+                System.out.println("Number: "+o.getNumber()+" Owner: "+a.getId());
+            }
+        }
+        System.out.println("****** PAYMENTS ******");
+        for (Account a : accounts) {
+            for (Payment p:a.getPayments()) {
+                System.out.println("ID: "+p.getPaymentId()+" Payment Type: "+p.getClass());
+            }
+        }
+
+
+
     }
 }

@@ -4,6 +4,9 @@ import java.util.List;
 public class Product {
     private String id;
     private String name;
+    private float price;
+
+
 
     private Supplier supplier;
     private PremiumAccount premiumAccount;
@@ -11,14 +14,22 @@ public class Product {
 
 
 
-    public Product(String id, String name, Supplier supplier) {
+    public Product(String id, String name, Supplier supplier,float price) {
         this.id = id;
         this.name = name;
-
+        this.price = price;
         this.premiumAccount = null;
         this.supplier = supplier;
         this.lineItemsList = new ArrayList<>();
 
+    }
+
+    public float getPrice() {
+        return price;
+    }
+
+    public void setPrice(float price) {
+        this.price = price;
     }
 
     public List<LineItem> getLineItemsList() { return lineItemsList; }
@@ -83,6 +94,22 @@ public class Product {
     }
 
     public void showDetailsAndConnections() {
-        //TODO: print all attributes and connections
+        System.out.println("----------Product---------\n *** Attributes: ***");
+        System.out.println("id: "+id+"\n"
+                +"name: "+name+"\n"
+                +"price: "+price);
+        System.out.println("*** Connections: ***");
+        System.out.println("Premium Account ID: "+premiumAccount.getId()+"\n"
+                +"Line Items: "+getLineItemListOf_id_quan_price()+"\n"
+                +"Supplier: "+supplier.getName()+"-"+supplier.getId()+"\n\n");
+    }
+
+    public String getLineItemListOf_id_quan_price() {
+        String lineItemsDetails="";
+        if(lineItemsList==null) return "Line Items list empty";
+        for (LineItem li:lineItemsList) {
+            lineItemsDetails+="id:"+id+" quantity:"+li.getQuantity()+" price:"+li.getPrice()+"\n";
+        }
+        return lineItemsDetails;
     }
 }

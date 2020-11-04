@@ -11,16 +11,41 @@ public abstract class Payment {
     private Order order;
     private static int idCounter=1;
 
-    public Payment(float total) {
+    public Payment(float total,Account account) {
         this.paymentId = "" + idCounter;
         this.total = total;
         this.details = "";
         idCounter++;
+        this.account=account;
     }
 
     public void setOrder(Order order) {
         this.order = order;
         this.account = order.getAccount();
+    }
+
+    public Date getPaid() {
+        return paid;
+    }
+
+    public float getTotal() {
+        return total;
+    }
+
+    public String getDetails() {
+        return details;
+    }
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public static int getIdCounter() {
+        return idCounter;
     }
 
     public String getPaymentId() {
