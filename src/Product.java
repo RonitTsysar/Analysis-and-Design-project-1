@@ -86,11 +86,18 @@ public class Product {
     }
 
     public void delete(){
+        this.supplier.removeProduct(this);
         for (LineItem lineItem : lineItemsList) {
             lineItem.delete();
         }
-        this.lineItemsList = null;
-        this.supplier.removeProduct(this);
+        this.lineItemsList = null;// optional
+
+        if(premiumAccount != null){
+            if(!this.premiumAccount.removeProduct(this)) {
+                System.out.println("This product wasn't in any Premium Account list");
+            }
+            premiumAccount = null;
+        }
     }
 
     public void showDetailsAndConnections() {
@@ -118,5 +125,11 @@ public class Product {
             lineItemsDetails+="id:"+id+" quantity:"+li.getQuantity()+" price:"+li.getPrice()+"\n";
         }
         return lineItemsDetails;
+    }
+
+    public boolean removeLineItem(LineItem lineItem) {
+        if(!this.lineItemsList.remove(lineItem))
+            return false;
+        return true;
     }
 }

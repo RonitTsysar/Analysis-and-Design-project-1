@@ -62,8 +62,22 @@ public class LineItem {
     }
 
     public void delete() {
-        this.shoppingCart = null;
-        this.order = null;
-        this.product = null;
+        if(this.shoppingCart != null) {
+            if(!this.shoppingCart.removeLineItem(this))
+                System.out.println("No connection to any shoppingCart");
+            this.shoppingCart = null;
+        }
+
+        if(this.order != null && this.order.getStatus() != OrderStatus.Closed) {
+            if(!this.order.removeLineItem(this))
+                System.out.println("No connection to any Order");
+            this.order = null;
+        }
+        if(this.product != null){
+            if(!this.product.removeLineItem(this)){
+                System.out.println("No Product for this line item exist anymore");
+            }
+            this.product = null;
+        }
     }
 }

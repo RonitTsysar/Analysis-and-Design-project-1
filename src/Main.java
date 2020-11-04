@@ -4,7 +4,6 @@ import java.util.*;
 public class Main {
 
     static Scanner scanner = new Scanner(System.in);
-//    static ArrayList<Customer> customersList = new ArrayList<Customer>();
     static Map<String, WebUser> webUsersList = new HashMap<>(); //key: webUserId
     static Map<String, Supplier> suppliersList = new HashMap<>();//key: supplierName
     static Map<String, Product> productsList = new HashMap<>(); // key: productName , value: Product
@@ -79,7 +78,6 @@ public class Main {
                         break;
 
                     case "Remove":
-                        System.out.println("Remove WebUser");
                         while (!webUsersList.containsKey(arg)) {
                             System.out.println("WebUser doesn't exist! Please choose another id: ");
                             arg = scanner.nextLine();
@@ -145,15 +143,12 @@ public class Main {
     }
 
     public static void removeWebUser(String login_id) {
-        WebUser wuToRemove = webUsersList.get(login_id);
-        if (activeWebUser != null && activeWebUser.equals(wuToRemove)) {
+        WebUser webUserToRemove = webUsersList.get(login_id);
+        if (activeWebUser != null && activeWebUser.equals(webUserToRemove)) {
             activeWebUser = null;
         }
-        wuToRemove.delete();
+        webUserToRemove.delete();
         webUsersList.remove(login_id);
-
-        //TODO: I commented the following code because you don't need to delete products if you delete WebUser!
-//
     }
 
     private static void logoutWebUser(String login_id) {
@@ -221,13 +216,12 @@ public class Main {
     }
 
     private static void deleteProduct(String productName) {
-        //changed by Lior
+        // changed by Dana & Roy
         Product prod = productsList.get(productName);
         if (prod == null) {
             System.out.println("product doesn't exist");
             return;
         }
-        prod.getSupplier().getProducts().remove(prod);//delete product from supplier product list
         prod.delete();
         productsList.remove(productName);
     }
@@ -351,7 +345,7 @@ public class Main {
         }
     }
 
-
+    // created by Roy & Dana
     public static void showObject(String objectId){
         //changed by lior
         Customer c=null;
@@ -359,6 +353,7 @@ public class Main {
 //        ShoppingCart sc=null;
         List<Payment> payments=new ArrayList<>();
         List<Order> orders=new ArrayList<>();
+
         Product prod = productsList.get(objectId);
         Supplier s=suppliersList.get(objectId);
         WebUser wu = webUsersList.get(objectId);
