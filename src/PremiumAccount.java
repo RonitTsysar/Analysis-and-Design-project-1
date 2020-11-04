@@ -78,4 +78,13 @@ public class PremiumAccount extends Account {
         return false;
     }
 
+
+    public void delete(){
+            super.delete();
+            for (Product prod : getProductsList()) {
+                prod.setPremiumAccount(null);
+            }
+//            setProducts(null);
+        }
 }
+

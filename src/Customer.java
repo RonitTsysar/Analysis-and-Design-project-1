@@ -107,9 +107,13 @@ public class Customer {
     }
 
     public void delete() {
-        if(this.account != null)
-            this.account.delete();
-        this.webUser.delete();
+//        if(this.account != null)
+//            this.account.delete();
+        this.account=null;
+        if(webUser != null) {
+            this.webUser.delete();
+            this.webUser = null;
+        }
     }
 
     public void showDetailsAndConnections() {

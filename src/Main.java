@@ -4,7 +4,6 @@ import java.util.*;
 public class Main {
 
     static Scanner scanner = new Scanner(System.in);
-//    static ArrayList<Customer> customersList = new ArrayList<Customer>();
     static Map<String, WebUser> webUsersList = new HashMap<>(); //key: webUserId
     static Map<String, Supplier> suppliersList = new HashMap<>();//key: supplierName
     static Map<String, Product> productsList = new HashMap<>(); // key: productName , value: Product
@@ -24,16 +23,16 @@ public class Main {
 
         //WebUser dani
         WebUser daniWU = WebUser.webUserFactory("Dani", "Dani123", true);
-        Customer daniCustomer = Customer.customerFactory(null, null, null, null, daniWU, true);
+        Customer daniCustomer = Customer.customerFactory("Dani", new Address("brener 10"), "0526655443", "danishovevani@gmail.com", daniWU, true);
         daniWU.addCustomer(daniCustomer);
-        Account daniAccount = Account.accountFactory("Dani", null, daniCustomer);
+        Account daniAccount = Account.accountFactory("Dani", "brener 10", daniCustomer);
         daniCustomer.addAccount(daniAccount);
 
         //WebUser Dana
         WebUser danaWU = WebUser.webUserFactory("Dana", "Dana123", true);
-        Customer danaCustomer = Customer.customerFactory(null, null, null, null, danaWU, true);
+        Customer danaCustomer = Customer.customerFactory("Dana", new Address("brener 10"), "0526655442", "danabanana@gmail.com", danaWU, true);
         danaWU.setCustomer(danaCustomer);
-        PremiumAccount danaAccount = PremiumAccount.PremiumAccountFactory("Dana", null, danaCustomer);
+        PremiumAccount danaAccount = PremiumAccount.PremiumAccountFactory("Dana", "brener 10", danaCustomer);
         danaCustomer.addAccount(danaAccount);
 
         webUsersList.put("Dana", danaWU);
@@ -117,8 +116,10 @@ public class Main {
                     case "ShowObjectId":
                         showObject(type);
                         break;
+                    
+                    default:
+                        System.out.println("invalid input");
                 }
-
             }
         } catch (Exception e) {
             scanner.close();
@@ -143,19 +144,11 @@ public class Main {
 
     public static void removeWebUser(String login_id) {
         WebUser webUserToRemove = webUsersList.get(login_id);
-        if (activeWebUser.equals(webUserToRemove)) {
+        if (activeWebUser != null && activeWebUser.equals(webUserToRemove)) {
             activeWebUser = null;
         }
         webUserToRemove.delete();
         webUsersList.remove(login_id);
-
-        //TODO: I commented the following code because you don't need to delete products if you delete WebUser!
-//        if (webUserToRemove.getCustomer().getAccount() instanceof PremiumAccount) {
-//            for (Product prod : ((PremiumAccount) webUserToRemove.getCustomer().getAccount()).getProductsList()) {
-//                prod.setPremiumAccount(null);
-//            }
-//            ((PremiumAccount) webUserToRemove.getCustomer().getAccount()).setProducts(null);
-//        }
     }
 
     private static void logoutWebUser(String login_id) {
@@ -370,8 +363,8 @@ public class Main {
             payments=a.getPayments();
             orders=a.getOrders();
         }
-        if(c != null) c.showDetailsAndConnections();
-        if(a != null) a.showDetailsAndConnections();
+        if(c != null && c.getId() == objectId) c.showDetailsAndConnections();
+        if(a != null && c.getId() == objectId) a.showDetailsAndConnections();
         if(prod != null) prod.showDetailsAndConnections();
         if(s != null) s.showDetailsAndConnections();
         for (Payment payment:payments) {
@@ -439,7 +432,7 @@ public class Main {
         System.out.println("****** WEB USERS ******");
         for (String webUserId : webUsersList.keySet()) {
             WebUser curWebUser = webUsersList.get(webUserId);
-            System.out.println("Login ID: "+curWebUser.getLogin_id()+" Password: "+curWebUser.getPassword());
+            System.out.println("WEB USER: "+curWebUser.getLogin_id());
             //collect other derived data:
             accounts.add(curWebUser.getCustomer().getAccount());
             customers.add(curWebUser.getCustomer());
@@ -447,37 +440,37 @@ public class Main {
         }
         System.out.println("****** CUSTOMERS ******");
         for (Customer customer:customers) {
-            System.out.println("ID: "+customer.getId()+" Address: "+customer.getAddress());
+            System.out.println("CUSTOMER: "+customer.getId());
         }
         System.out.println("****** ACCOUNTS ******");
         for (Account account:accounts) {
-            System.out.println("ID: "+account.getId()+" Premium: "+account.isPremium());
+            System.out.println("ACCOUNT: "+account.getId());
         }
         System.out.println("****** SHOPPING CARTS ******");
         for (ShoppingCart sc:shoppingCarts) {
-            System.out.println("Owner Name: "+sc.getWebUser().getLogin_id()+" Created: "+sc.getCreated());
+            System.out.println("SHOPPING CART of: "+sc.getWebUser().getLogin_id()+" Created: "+sc.getCreated());
 
         }
         System.out.println("****** PRODUCTS ******");
         for (String productName : productsList.keySet()) {
             Product product = productsList.get(productName);
-            System.out.println("Product ID: "+product.getId()+" Name: "+productName);
+            System.out.println("PRODUCT: "+product.getId());
         }
         System.out.println("****** SUPPLIERS ******");
         for (String supplierName : suppliersList.keySet()) {
             Supplier supplier = suppliersList.get(supplierName);
-            System.out.println("ID: "+supplier.getId()+" Name: "+supplierName);
+            System.out.println("SUPPLIER: "+supplierName);
         }
         System.out.println("****** ORDERS ******");
         for (Account a : accounts) {
             for (Order o:a.getOrders()) {
-                System.out.println("Number: "+o.getNumber()+" Owner: "+a.getId());
+                System.out.println("ORDER: "+o.getNumber());
             }
         }
         System.out.println("****** PAYMENTS ******");
         for (Account a : accounts) {
             for (Payment p:a.getPayments()) {
-                System.out.println("ID: "+p.getPaymentId()+" Payment Type: "+p.getClass());
+                System.out.println("PAYMENT: "+p.getPaymentId());
             }
         }
 

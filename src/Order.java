@@ -102,6 +102,7 @@ public class Order {
         for (LineItem lineItem : lineItems) {
             lineItem.delete();
         }
+        lineItems = null;
     }
 
     public void showDetailsAndConnections() {
