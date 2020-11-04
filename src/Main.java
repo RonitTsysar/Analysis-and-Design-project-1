@@ -211,10 +211,11 @@ public class Main {
         }
         Product prodToLink = productsList.get(productName);
         Account curActiveAccount = activeWebUser.getCustomer().getAccount();
-        if (curActiveAccount instanceof PremiumAccount && prodToLink != null) {
+        if (curActiveAccount instanceof PremiumAccount && prodToLink != null && prodToLink.getPremiumAccount()==null) {
             ((PremiumAccount)curActiveAccount).addProduct(prodToLink);
+            prodToLink.setPremiumAccount((PremiumAccount)curActiveAccount);
         } else {
-            System.out.println("Aborting: Active user is not premium or product doesn't exist");
+            System.out.println("Aborting: Active user is not premium or product doesn't exist or product already connected to other account");
         }
 
     }
@@ -248,7 +249,7 @@ public class Main {
             System.out.println("Enter supplier ID: ");
             String supId = scanner.nextLine();
             supplier = new Supplier(supId, supplierName);
-            suppliersList.put(supId, supplier);
+            suppliersList.put(supplierName, supplier);
         }
         System.out.println("please enter product id:");
         String productId = scanner.nextLine();
@@ -368,8 +369,10 @@ public class Main {
             payments=a.getPayments();
             orders=a.getOrders();
         }
-        if(c != null && c.getId() == objectId) c.showDetailsAndConnections();
-        if(a != null && c.getId() == objectId) a.showDetailsAndConnections();
+        if(c != null && c.getId().equals(objectId))
+            c.showDetailsAndConnections();
+        if(a != null && a.getId().equals(objectId))
+            a.showDetailsAndConnections();
         if(prod != null) prod.showDetailsAndConnections();
         if(s != null) s.showDetailsAndConnections();
         for (Payment payment:payments) {

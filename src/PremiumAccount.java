@@ -39,9 +39,10 @@ public class PremiumAccount extends Account {
 
     public boolean addProduct(Product productToAdd){
         for (Product product : products) {
-            if(product.getId().equals(productToAdd.getId()))
+            if(product.getId().equals(productToAdd.getId())) {
                 System.out.println("This product is already exist");
                 return false;
+            }
         }
         this.products.add(productToAdd);
         if(productToAdd.getPremiumAccount() != null)
@@ -65,7 +66,7 @@ public class PremiumAccount extends Account {
 
     private String getProductsNameList() {
         String productsIds="";
-        if(products==null) return "product list empty";
+        if(products == null) return "product list empty";
         for (Product product:products) {
             productsIds+=product.getName()+"\n";
         }

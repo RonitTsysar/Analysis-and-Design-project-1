@@ -28,9 +28,8 @@ public class Account {
         this.id = id;
         this.billing_address = billingAddress;
         this.is_closed = false;
-        //TODO - Date open
-        //       Date closed
-        //       balance
+        this.open=new Date();
+        //Date closed
         this.shoppingCart = null;
         this.customer = customer;
         payments = new ArrayList<Payment>();
