@@ -118,8 +118,10 @@ public class Account {
     }
 
     public void delete() {
-        if(this.customer != null)
+        if(this.customer != null) {
             this.customer.delete();
+            this.customer = null;
+        }
         for (Payment payment : payments) {
             payment.delete();
         }
@@ -128,6 +130,9 @@ public class Account {
             order.delete();
         }
         this.orders = null;
+        this.shoppingCart=null;
+
+
     }
 
     public void showDetailsAndConnections() {

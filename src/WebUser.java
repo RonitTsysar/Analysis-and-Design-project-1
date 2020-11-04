@@ -118,8 +118,11 @@ public class WebUser {
     }
 
     public void delete() {
-        this.shoppingCart.delete();
-        this.shoppingCart = null;
+        customer.setWebUser(null);
+        if(shoppingCart != null) {
+            this.shoppingCart.delete();
+            this.shoppingCart = null;
+        }
     }
 
 

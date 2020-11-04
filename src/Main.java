@@ -144,19 +144,14 @@ public class Main {
 
     public static void removeWebUser(String login_id) {
         WebUser wuToRemove = webUsersList.get(login_id);
-        if (activeWebUser.equals(wuToRemove)) {
+        if (activeWebUser != null && activeWebUser.equals(wuToRemove)) {
             activeWebUser = null;
         }
         wuToRemove.delete();
         webUsersList.remove(login_id);
 
         //TODO: I commented the following code because you don't need to delete products if you delete WebUser!
-//        if (wuToRemove.getCustomer().getAccount() instanceof PremiumAccount) {
-//            for (Product prod : ((PremiumAccount) wuToRemove.getCustomer().getAccount()).getProductsList()) {
-//                prod.setPremiumAccount(null);
-//            }
-//            ((PremiumAccount) wuToRemove.getCustomer().getAccount()).setProducts(null);
-//        }
+//
     }
 
     private static void logoutWebUser(String login_id) {
@@ -371,8 +366,8 @@ public class Main {
             payments=a.getPayments();
             orders=a.getOrders();
         }
-        if(c != null) c.showDetailsAndConnections();
-        if(a != null) a.showDetailsAndConnections();
+        if(c != null && c.getId() == objectId) c.showDetailsAndConnections();
+        if(a != null && c.getId() == objectId) a.showDetailsAndConnections();
         if(prod != null) prod.showDetailsAndConnections();
         if(s != null) s.showDetailsAndConnections();
         for (Payment payment:payments) {
@@ -440,7 +435,7 @@ public class Main {
         System.out.println("****** WEB USERS ******");
         for (String webUserId : webUsersList.keySet()) {
             WebUser curWebUser = webUsersList.get(webUserId);
-            System.out.println("Login ID: "+curWebUser.getLogin_id()+" Password: "+curWebUser.getPassword());
+            System.out.println("WEB USER: "+curWebUser.getLogin_id());
             //collect other derived data:
             accounts.add(curWebUser.getCustomer().getAccount());
             customers.add(curWebUser.getCustomer());
@@ -448,37 +443,37 @@ public class Main {
         }
         System.out.println("****** CUSTOMERS ******");
         for (Customer customer:customers) {
-            System.out.println("ID: "+customer.getId()+" Address: "+customer.getAddress());
+            System.out.println("CUSTOMER: "+customer.getId());
         }
         System.out.println("****** ACCOUNTS ******");
         for (Account account:accounts) {
-            System.out.println("ID: "+account.getId()+" Premium: "+account.isPremium());
+            System.out.println("ACCOUNT: "+account.getId());
         }
         System.out.println("****** SHOPPING CARTS ******");
         for (ShoppingCart sc:shoppingCarts) {
-            System.out.println("Owner Name: "+sc.getWebUser().getLogin_id()+" Created: "+sc.getCreated());
+            System.out.println("SHOPPING CART of: "+sc.getWebUser().getLogin_id()+" Created: "+sc.getCreated());
 
         }
         System.out.println("****** PRODUCTS ******");
         for (String productName : productsList.keySet()) {
             Product product = productsList.get(productName);
-            System.out.println("Product ID: "+product.getId()+" Name: "+productName);
+            System.out.println("PRODUCT: "+product.getId());
         }
         System.out.println("****** SUPPLIERS ******");
         for (String supplierName : suppliersList.keySet()) {
             Supplier supplier = suppliersList.get(supplierName);
-            System.out.println("ID: "+supplier.getId()+" Name: "+supplierName);
+            System.out.println("SUPPLIER: "+supplierName);
         }
         System.out.println("****** ORDERS ******");
         for (Account a : accounts) {
             for (Order o:a.getOrders()) {
-                System.out.println("Number: "+o.getNumber()+" Owner: "+a.getId());
+                System.out.println("ORDER: "+o.getNumber());
             }
         }
         System.out.println("****** PAYMENTS ******");
         for (Account a : accounts) {
             for (Payment p:a.getPayments()) {
-                System.out.println("ID: "+p.getPaymentId()+" Payment Type: "+p.getClass());
+                System.out.println("PAYMENT: "+p.getPaymentId());
             }
         }
 

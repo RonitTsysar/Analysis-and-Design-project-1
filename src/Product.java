@@ -99,9 +99,16 @@ public class Product {
                 +"name: "+name+"\n"
                 +"price: "+price);
         System.out.println("*** Connections: ***");
-        System.out.println("Premium Account ID: "+premiumAccount.getId()+"\n"
-                +"Line Items: "+getLineItemListOf_id_quan_price()+"\n"
-                +"Supplier: "+supplier.getName()+"-"+supplier.getId()+"\n\n");
+        if(premiumAccount != null) {
+            System.out.println("Premium Account ID: " + premiumAccount.getId() + "\n"
+                    + "Line Items: " + getLineItemListOf_id_quan_price() + "\n"
+                    + "Supplier: " + supplier.getName() + "-" + supplier.getId() + "\n\n");
+        }
+        else{
+            System.out.println("Premium Account ID: \n"
+                    + "Line Items: " + getLineItemListOf_id_quan_price() + "\n"
+                    + "Supplier: " + supplier.getName() + "-" + supplier.getId() + "\n\n");
+        }
     }
 
     public String getLineItemListOf_id_quan_price() {

@@ -71,4 +71,13 @@ public class PremiumAccount extends Account {
         }
         return productsIds;
     }
+
+    public void delete(){
+            super.delete();
+            for (Product prod : getProductsList()) {
+                prod.setPremiumAccount(null);
+            }
+//            setProducts(null);
+        }
 }
+

@@ -74,7 +74,11 @@ public class ShoppingCart {
 
     public void delete() {
         this.webUser = null;
-        this.account.delete();
+        if(account != null) {
+            this.account.delete();
+            account = null;
+        }
+
         for (LineItem lineItem : lineItemList) {
             lineItem.delete();
         }
