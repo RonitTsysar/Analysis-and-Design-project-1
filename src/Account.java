@@ -48,7 +48,7 @@ public class Account {
         return id;
     }
 
-    private static ShoppingCart createShoppingCart(Account account) {
+    protected static ShoppingCart createShoppingCart(Account account) {
         ShoppingCart shoppingCart = ShoppingCart.shoppingCartFactory(account);
         account.shoppingCart = shoppingCart;
 

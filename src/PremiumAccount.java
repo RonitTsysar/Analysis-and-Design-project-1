@@ -7,12 +7,13 @@ public class PremiumAccount extends Account {
 
     public static PremiumAccount PremiumAccountFactory(String id, String billingAddress, Customer customer){
         PremiumAccount premiumAccount = new PremiumAccount(id, billingAddress, customer);
+        premiumAccount.setShoppingCart(Account.createShoppingCart(premiumAccount));
+
         return premiumAccount;
     }
 
     private PremiumAccount(String id, String billingAddress, Customer customer){
         super(id, billingAddress, customer);
-        this.setShoppingCart(ShoppingCart.shoppingCartFactory(this));
         this.products = new ArrayList<>();
     }
 
