@@ -127,5 +127,14 @@ public class Order {
     }
 
 
+    public OrderStatus getStatus() {
+        return status;
+    }
 
+    public boolean removeLineItem(LineItem lineItem){
+        if(!this.lineItems.remove(lineItem)){
+            return false;
+        }
+        return true;
+    }
 }

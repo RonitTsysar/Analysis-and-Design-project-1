@@ -80,6 +80,12 @@ public class ShoppingCart {
         }
         this.lineItemList = null;
     }
+
+    public boolean removeLineItem(LineItem lineItem) {
+        if(this.lineItemList.remove(lineItem))
+            return true;
+        return false;
+    }
 //    public void showDetailsAndConnections() {
 //        System.out.println("----------Shopping Cart---------\n *** Attributes: ***");
 //        System.out.println("created: "+created+"\n");

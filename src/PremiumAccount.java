@@ -71,4 +71,11 @@ public class PremiumAccount extends Account {
         }
         return productsIds;
     }
+
+    public boolean removeProduct(Product productToRemove) {
+        if(products.remove(productToRemove))
+            return true;
+        return false;
+    }
+
 }

@@ -79,7 +79,6 @@ public class Main {
                         break;
 
                     case "Remove":
-                        System.out.println("Remove WebUser");
                         while (!webUsersList.containsKey(arg)) {
                             System.out.println("WebUser doesn't exist! Please choose another id: ");
                             arg = scanner.nextLine();
@@ -143,19 +142,19 @@ public class Main {
     }
 
     public static void removeWebUser(String login_id) {
-        WebUser wuToRemove = webUsersList.get(login_id);
-        if (activeWebUser.equals(wuToRemove)) {
+        WebUser webUserToRemove = webUsersList.get(login_id);
+        if (activeWebUser.equals(webUserToRemove)) {
             activeWebUser = null;
         }
-        wuToRemove.delete();
+        webUserToRemove.delete();
         webUsersList.remove(login_id);
 
         //TODO: I commented the following code because you don't need to delete products if you delete WebUser!
-//        if (wuToRemove.getCustomer().getAccount() instanceof PremiumAccount) {
-//            for (Product prod : ((PremiumAccount) wuToRemove.getCustomer().getAccount()).getProductsList()) {
+//        if (webUserToRemove.getCustomer().getAccount() instanceof PremiumAccount) {
+//            for (Product prod : ((PremiumAccount) webUserToRemove.getCustomer().getAccount()).getProductsList()) {
 //                prod.setPremiumAccount(null);
 //            }
-//            ((PremiumAccount) wuToRemove.getCustomer().getAccount()).setProducts(null);
+//            ((PremiumAccount) webUserToRemove.getCustomer().getAccount()).setProducts(null);
 //        }
     }
 
@@ -223,13 +222,12 @@ public class Main {
     }
 
     private static void deleteProduct(String productName) {
-        //changed by Lior
+        // changed by Dana & Roy
         Product prod = productsList.get(productName);
         if (prod == null) {
             System.out.println("product doesn't exist");
             return;
         }
-        prod.getSupplier().getProducts().remove(prod);//delete product from supplier product list
         prod.delete();
         productsList.remove(productName);
     }
@@ -353,7 +351,7 @@ public class Main {
         }
     }
 
-
+    // created by Roy & Dana
     public static void showObject(String objectId){
         //changed by lior
         Customer c=null;
@@ -361,6 +359,7 @@ public class Main {
 //        ShoppingCart sc=null;
         List<Payment> payments=new ArrayList<>();
         List<Order> orders=new ArrayList<>();
+
         Product prod = productsList.get(objectId);
         Supplier s=suppliersList.get(objectId);
         WebUser wu = webUsersList.get(objectId);
