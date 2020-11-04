@@ -80,4 +80,9 @@ public class LineItem {
             this.product = null;
         }
     }
+
+    @Override
+    public String toString() {
+        return "LineItem: "+ product.getName() + "\nQuantity: " + this.quantity + "\nPrice: " + this.price;
+    }
 }

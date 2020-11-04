@@ -40,7 +40,7 @@ public class Product {
 
     public void showLineItems(){
         if(this.lineItemsList.size() < 1)
-            System.out.println("No Line Items of this product");
+            System.out.println("No Line Items");
         else{
             for (LineItem lineItem : lineItemsList) {
                 System.out.println(lineItemsList.indexOf(lineItem)+1 + ". "  + "Quantity: " +lineItem.getQuantity() + "Price per Item: " + lineItem.getPrice());
@@ -130,6 +130,15 @@ public class Product {
     public boolean removeLineItem(LineItem lineItem) {
         if(!this.lineItemsList.remove(lineItem))
             return false;
+        return true;
+    }
+
+
+    public boolean addLineItem(LineItem newLineItem) {
+        if(this.lineItemsList.contains(newLineItem)){
+            return false;
+        }
+        this.lineItemsList.add(newLineItem);
         return true;
     }
 }

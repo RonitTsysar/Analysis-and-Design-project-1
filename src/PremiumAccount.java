@@ -7,7 +7,6 @@ public class PremiumAccount extends Account {
 
     public static PremiumAccount PremiumAccountFactory(String id, String billingAddress, Customer customer){
         PremiumAccount premiumAccount = new PremiumAccount(id, billingAddress, customer);
-
         return premiumAccount;
     }
 
@@ -68,7 +67,7 @@ public class PremiumAccount extends Account {
         String productsIds="";
         if(products == null) return "product list empty";
         for (Product product:products) {
-            productsIds+=product.getName()+"\n";
+            productsIds += product.getName()+"\n";
         }
         return productsIds;
     }

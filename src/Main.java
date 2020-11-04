@@ -1,5 +1,7 @@
 import java.util.*;
 
+import static java.lang.Integer.parseInt;
+
 
 public class Main {
 
@@ -169,6 +171,7 @@ public class Main {
             System.out.println("WebUser with id: " + login_id + " is not currently logged in");
             System.out.println("WebUser logged in id is: " + activeWebUser.getLogin_id());
         }
+        System.out.println("Web User Logged Out Successfully!");
     }
 
     private static void loginWebUser(String login_id) {
@@ -208,7 +211,19 @@ public class Main {
         Account curActiveAccount = activeWebUser.getCustomer().getAccount();
         if (curActiveAccount instanceof PremiumAccount && prodToLink != null && prodToLink.getPremiumAccount()==null) {
             ((PremiumAccount)curActiveAccount).addProduct(prodToLink);
-            prodToLink.setPremiumAccount((PremiumAccount)curActiveAccount);
+            boolean answer = false;
+            while(!answer){
+                System.out.println("Please enter the selling options of this product in this format: <Quantity>,<Price>");
+                String lineItemStr = scanner.nextLine();
+                String[] splitLineItem = lineItemStr.split(",");
+                LineItem newLineItem = new LineItem(parseInt(splitLineItem[0]), parseInt(splitLineItem[1]));
+                prodToLink.addLineItem(newLineItem);
+                System.out.println("New LineItem was added Successfully to this product");
+                System.out.println("Do you want to add another line item? y/n");
+                String ans = scanner.nextLine();
+                if(ans.equals("n")) answer = true;
+            }
+            System.out.println("Product - "+ productName + " linked successfully to "+ activeWebUser.getLogin_id());
         } else {
             System.out.println("Aborting: Active user is not premium or product doesn't exist or product already connected to other account");
         }
@@ -250,8 +265,10 @@ public class Main {
         System.out.println("please enter product price per unit:");
         float productPrice = Float.parseFloat(scanner.nextLine());
         Product product = new Product(productId, productName, supplier, productPrice);
+
         supplier.getProducts().add(product);
         productsList.put(productName, product);
+        System.out.println("Product added Successfully!");
     }
 
     // Dana & Roy
