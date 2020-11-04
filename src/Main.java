@@ -24,16 +24,16 @@ public class Main {
 
         //WebUser dani
         WebUser daniWU = WebUser.webUserFactory("Dani", "Dani123", true);
-        Customer daniCustomer = Customer.customerFactory(null, null, null, null, daniWU, true);
+        Customer daniCustomer = Customer.customerFactory("Dani", new Address("brener 10"), "0526655443", "danishovevani@gmail.com", daniWU, true);
         daniWU.addCustomer(daniCustomer);
-        Account daniAccount = Account.accountFactory("Dani", null, daniCustomer);
+        Account daniAccount = Account.accountFactory("Dani", "brener 10", daniCustomer);
         daniCustomer.addAccount(daniAccount);
 
         //WebUser Dana
         WebUser danaWU = WebUser.webUserFactory("Dana", "Dana123", true);
-        Customer danaCustomer = Customer.customerFactory(null, null, null, null, danaWU, true);
+        Customer danaCustomer = Customer.customerFactory("Dana", new Address("brener 10"), "0526655442", "danabanana@gmail.com", danaWU, true);
         danaWU.setCustomer(danaCustomer);
-        PremiumAccount danaAccount = PremiumAccount.PremiumAccountFactory("Dana", null, danaCustomer);
+        PremiumAccount danaAccount = PremiumAccount.PremiumAccountFactory("Dana", "brener 10", danaCustomer);
         danaCustomer.addAccount(danaAccount);
 
         webUsersList.put("Dana", danaWU);
@@ -118,8 +118,10 @@ public class Main {
                     case "ShowObjectId":
                         showObject(type);
                         break;
+                    
+                    default:
+                        System.out.println("invalid input");
                 }
-
             }
         } catch (Exception e) {
             scanner.close();
