@@ -273,7 +273,12 @@ public class Main {
 
     // Dana & Roy
     public static void makeOrder() {
-        Order newOrder = new Order(activeWebUser.getCustomer().getAccount());
+        if(activeWebUser == null){
+            System.out.println("Please Login first");
+            return;
+        }
+        Account curAccount = activeWebUser.getCustomer().getAccount();
+        Order newOrder = new Order(curAccount);
         System.out.println("Please Enter Seller's User Name: ");
         String login_id = scanner.nextLine();
         WebUser sellerWebUser = null;

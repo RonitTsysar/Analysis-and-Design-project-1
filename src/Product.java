@@ -43,7 +43,7 @@ public class Product {
             System.out.println("No Line Items");
         else{
             for (LineItem lineItem : lineItemsList) {
-                System.out.println(lineItemsList.indexOf(lineItem)+1 + ". "  + "Quantity: " +lineItem.getQuantity() + "Price per Item: " + lineItem.getPrice());
+                System.out.println(lineItemsList.indexOf(lineItem)+1 + ". "  + "Quantity: " +lineItem.getQuantity() + " Price per Item: " + lineItem.getPrice());
             }
         }
     }
