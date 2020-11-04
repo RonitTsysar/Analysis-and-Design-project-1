@@ -4,8 +4,8 @@ import java.util.*;
 public class Main {
 
     static Scanner scanner = new Scanner(System.in);
-    static ArrayList<Customer> customersList = new ArrayList<Customer>();
-    static Map<String, WebUser> webUsersList = new HashMap(); //key: webUserId
+//    static ArrayList<Customer> customersList = new ArrayList<Customer>();
+    static Map<String, WebUser> webUsersList = new HashMap<>(); //key: webUserId
     static Map<String, Supplier> suppliersList = new HashMap<>();//key: supplierName
     static Map<String, Product> productsList = new HashMap<>(); // key: productName , value: Product
     static WebUser activeWebUser;
@@ -44,7 +44,7 @@ public class Main {
 
     public static void main(String[] args) {
         SystemStartUp();
-        boolean stopProgram = false;
+
 
         try {
             while (true) {
@@ -52,6 +52,7 @@ public class Main {
                 String command = scanner.nextLine();
                 if (command.equals(""))
                     continue;
+
 
                 ArrayList<String> command_list = new ArrayList<>(Arrays.asList(command.split(" ")));
                 command = command_list.get(0);

@@ -20,7 +20,6 @@ public class Account {
     public static Account accountFactory(String id, String billingAddress, Customer customer){
         Account account = new Account(id, billingAddress, customer);
         account.shoppingCart = createShoppingCart(account);
-
         return account;
     }
 

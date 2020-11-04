@@ -119,7 +119,9 @@ public class WebUser {
 
     public void delete() {
         this.shoppingCart.delete();
+        this.shoppingCart = null;
     }
+
 
     public void showDetailsAndConnections() {
         //TODO: print all attributes and connections
