@@ -287,14 +287,17 @@ public class Main {
                 sellerWebUser = webUsersList.get(webUserID);
                 break;
             } else {
-                throw new RuntimeException("Seller not found");
+                System.out.println("Seller with this ID Doesn't exist");
+                System.out.println("Sorry ! Please try again to Make new Order");
+                return;
             }
         }
         // display products to sell
         if (sellerWebUser != null)
+            System.out.println("Here are the products this Seller sells");
             sellerWebUser.getCustomer().getAccount().displayProductsToSell();
 
-        // choosing products
+        // choosing product
         boolean finishOrder = false;
         while (!finishOrder) {
             System.out.println("Please type the product ID you want");
@@ -315,7 +318,7 @@ public class Main {
             System.out.println("Please press your choice number.");
             int chosenOption = scanner.nextInt();
             LineItem newItem = chosenProduct.getLineItemsList().get(chosenOption - 1);
-            activeWebUser.getCustomer().getAccount().getShoppingCart().addLineItem(newItem);
+            curAccount.getShoppingCart().addLineItem(newItem);
             newOrder.addLineItem(newItem);
             System.out.println("Do you want to choose another product? y/n");
             String answer = scanner.nextLine();
@@ -324,7 +327,7 @@ public class Main {
             }
         }
         newOrder.setOrdered(new Date());
-        String shippingAddress = activeWebUser.getCustomer().getAccount().getBilling_address();
+        String shippingAddress = curAccount.getBilling_address();
         newOrder.setShip_to(new Address(shippingAddress));
         activeWebUser.getCustomer().getAccount().setLastOrder(newOrder);
         System.out.println("Order Created");

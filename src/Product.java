@@ -32,7 +32,8 @@ public class Product {
         this.price = price;
     }
 
-    public List<LineItem> getLineItemsList() { return lineItemsList; }
+    public List<LineItem> getLineItemsList() {
+        return lineItemsList; }
 
     public String getId() {
         return id;
@@ -43,7 +44,7 @@ public class Product {
             System.out.println("No Line Items");
         else{
             for (LineItem lineItem : lineItemsList) {
-                System.out.println(lineItemsList.indexOf(lineItem)+1 + ". "  + "Quantity: " +lineItem.getQuantity() + " Price per Item: " + lineItem.getPrice());
+                System.out.println(lineItemsList.indexOf(lineItem)+1 + ". "  + "Quantity: " +lineItem.getQuantity() + " Price : " + lineItem.getPrice());
             }
         }
     }
