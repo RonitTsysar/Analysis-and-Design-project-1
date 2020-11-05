@@ -33,7 +33,8 @@ public class Product {
     }
 
     public List<LineItem> getLineItemsList() {
-        return lineItemsList; }
+        return lineItemsList;
+    }
 
     public String getId() {
         return id;
@@ -140,6 +141,7 @@ public class Product {
             return false;
         }
         this.lineItemsList.add(newLineItem);
+        newLineItem.setProduct(this);
         return true;
     }
 }

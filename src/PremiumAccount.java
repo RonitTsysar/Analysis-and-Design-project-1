@@ -33,7 +33,7 @@ public class PremiumAccount extends Account {
 
     public void displayProductsToSell(){
         for (Product product : products) {
-            System.out.println(product.getId());
+            System.out.println(product.getName());
         }
     }
 
