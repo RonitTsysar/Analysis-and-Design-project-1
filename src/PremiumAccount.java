@@ -33,7 +33,7 @@ public class PremiumAccount extends Account {
 
     public void displayProductsToSell(){
         for (Product product : products) {
-            product.showLineItems();
+            System.out.println(product.getName());
         }
     }
 
@@ -86,6 +86,12 @@ public class PremiumAccount extends Account {
                 prod.setPremiumAccount(null);
             }
 //            setProducts(null);
-        }
+
+    }
+
+    @Override
+    public List<Product> getProducts() {
+        return products;
+    }
 }
 
