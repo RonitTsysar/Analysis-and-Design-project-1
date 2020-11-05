@@ -7,13 +7,14 @@ public class Main {
 
     static Scanner scanner = new Scanner(System.in);
     static Map<String, WebUser> webUsersList = new HashMap<>(); //key: webUserId
-    static Map<String, Supplier> suppliersList = new HashMap<>();//key: supplierName
-    static Map<String, Product> productsList = new HashMap<>(); // key: productName , value: Product
+    static Map<String, Supplier> suppliersList = new HashMap<>();//key: supplierName --> key: supplierID
+    static Map<String, Product> productsList = new HashMap<>(); // key: productName -> key: productID
     static WebUser activeWebUser;
 
     public static void SystemStartUp() {
         Supplier mosheSupplier = new Supplier("123", "Moshe");
-        suppliersList.put(mosheSupplier.getName(), mosheSupplier);
+        //suppliersList.put(mosheSupplier.getName(), mosheSupplier);
+        suppliersList.put(mosheSupplier.getId(), mosheSupplier);
 
         Product bambaProduct = new Product("Bamba", "Bamba", mosheSupplier,5);
         mosheSupplier.getProducts().add(bambaProduct);
@@ -37,8 +38,9 @@ public class Main {
         PremiumAccount danaAccount = PremiumAccount.PremiumAccountFactory("Dana", "brener 10", danaCustomer);
         danaCustomer.addAccount(danaAccount);
 
-        webUsersList.put("Dana", danaWU);
-        webUsersList.put("Dani", daniWU);
+        webUsersList.put(danaWU.getLogin_id(), danaWU);
+        webUsersList.put(daniWU.getLogin_id(), daniWU);
+
         danaAccount.getProductsList().add(bambaProduct);
         bambaProduct.setPremiumAccount(danaAccount);
     }
@@ -117,12 +119,13 @@ public class Main {
                     case "ShowObjectId":
                         showObject(type);
                         break;
-                    
+
                     default:
                         System.out.println("invalid input");
                 }
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             scanner.close();
         }
     }
@@ -145,7 +148,7 @@ public class Main {
 
     public static void removeWebUser(String login_id) {
         WebUser webUserToRemove = webUsersList.get(login_id);
-        if (activeWebUser != null && activeWebUser.equals(webUserToRemove)) {
+        if (activeWebUser != null && activeWebUser.equals(webUserToRemove)){
             activeWebUser = null;
         }
         webUserToRemove.delete();
@@ -207,9 +210,16 @@ public class Main {
             System.out.println("Please Login first");
             return;
         }
-        Product prodToLink = productsList.get(productName);
+
+        String prodId = "";
+        for (Product product : productsList.values()) {
+            if(product.getName().equals(productName))
+                prodId = product.getId();
+        }
+
+        Product prodToLink = productsList.get(prodId);
         Account curActiveAccount = activeWebUser.getCustomer().getAccount();
-        if (curActiveAccount instanceof PremiumAccount && prodToLink != null && prodToLink.getPremiumAccount()==null) {
+        if (curActiveAccount instanceof PremiumAccount && prodToLink != null && prodToLink.getPremiumAccount() == null) {
             ((PremiumAccount)curActiveAccount).addProduct(prodToLink);
             boolean answer = false;
             while(!answer){
@@ -232,34 +242,55 @@ public class Main {
 
     private static void deleteProduct(String productName) {
         // changed by Dana & Roy
-        Product prod = productsList.get(productName);
+        String prodId = "";
+        for (Product product : productsList.values()) {
+            if(product.getName().equals(productName))
+                prodId = product.getId();
+        }
+
+        Product prod = productsList.get(prodId);
         if (prod == null) {
             System.out.println("product doesn't exist");
             return;
         }
         prod.delete();
-        productsList.remove(productName);
+        productsList.remove(prodId);
     }
 
 
     private static void addProduct() {
         System.out.println("Please enter product name:");
         String productName = scanner.nextLine();
-        Product prodToAdd = productsList.get(productName);
-        while (prodToAdd != null) {
+        List<String> prodNames = new ArrayList<>();
+
+        for (Product product : productsList.values()) {
+            prodNames.add(product.getName());
+        }
+        while(prodNames.contains(productName)){
             System.out.println("Product name already exists. enter another name:");
             productName = scanner.nextLine();
-            prodToAdd = productsList.get(productName);
         }
+
         System.out.println("Please enter supplier name:");
         String supplierName = scanner.nextLine();
-        Supplier supplier = suppliersList.get(supplierName);
-        if (supplier == null) {
+
+        String supplierId = "";
+        for (Supplier supp : suppliersList.values()) {
+            if(supplierName.equals(supp.getName()))
+                supplierId = supp.getId();
+        }
+
+        Supplier supplier = null;
+        if (supplierId.equals("")) {
             System.out.println("Enter supplier ID: ");
             String supId = scanner.nextLine();
             supplier = new Supplier(supId, supplierName);
-            suppliersList.put(supplierName, supplier);
+            suppliersList.put(supId, supplier);
         }
+        else{
+            supplier = suppliersList.get(supplierId);
+        }
+
         System.out.println("please enter product id:");
         String productId = scanner.nextLine();
         System.out.println("please enter product price per unit:");
@@ -267,13 +298,13 @@ public class Main {
         Product product = new Product(productId, productName, supplier, productPrice);
 
         supplier.getProducts().add(product);
-        productsList.put(productName, product);
+        productsList.put(productId, product);
         System.out.println("Product added Successfully!");
     }
 
     // Dana & Roy
     public static void makeOrder() {
-        Scanner scanLine = new Scanner(System.in);
+//        Scanner scanLine = new Scanner(System.in);
         if(activeWebUser == null){
             System.out.println("Please Login first");
             return;
@@ -294,9 +325,16 @@ public class Main {
             }
         }
         // display products to sell
-        if (sellerWebUser != null)
-            System.out.println("Here are the products this Seller sells");
-            sellerWebUser.getCustomer().getAccount().displayProductsToSell();
+        if(sellerWebUser == null)
+            return;
+        if(sellerWebUser.getCustomer().getAccount().getProducts().size() < 1)
+        {
+            System.out.println("This Seller have no products to sell");
+            return;
+        }
+
+        System.out.println("Here are the products this Seller sells");
+        sellerWebUser.getCustomer().getAccount().displayProductsToSell();
 
         // choosing product
         boolean orderInProc = true;
@@ -333,13 +371,13 @@ public class Main {
             newOrder.addLineItem(newItem);
             System.out.println("Do you want to choose another product? y/n");
 
-            String answer = scanLine.nextLine();
+            String answer = scanner.nextLine();
             if (answer.equals("n")) {
                 orderInProc = false;
             }
         }
         if(newOrder.getLineItems().size() < 1){
-            System.out.println("Order Empty - ");
+            System.out.print("Order Empty - ");
             System.out.println("Please try again");
             return;
         }
@@ -352,17 +390,19 @@ public class Main {
 
         // payment
         System.out.println("How do you want to pay -\nImmediate Payment/ Delayed Payment ?\nPlease enter 1-Immediate or 2-Delayed");
-        int paymentType = scanLine.nextInt();
+        int paymentType = scanner.nextInt();
+        scanner.nextLine();
 
         float totalToBePayed = newOrder.getTotal();
         while (totalToBePayed > 0) {
             System.out.println("Please Enter the sum you want to pay from the total of: " + totalToBePayed);
-            int partOfPay = scanLine.nextInt();
+            int partOfPay = scanner.nextInt();
+            scanner.nextLine();
             if (partOfPay <= newOrder.getTotal()) {
                 totalToBePayed -= partOfPay;
 
                 if (paymentType == 1) {
-                    ImmediatePayment newImmediatePayment = new ImmediatePayment(partOfPay,activeWebUser.getCustomer().getAccount());
+                    ImmediatePayment newImmediatePayment = new ImmediatePayment(partOfPay, activeWebUser.getCustomer().getAccount());
                     System.out.println("Do you want a phone confirmation ? y/n");
                     String phoneCofirmAns = scanner.nextLine();
                     boolean phoneConfirmation = false;
@@ -372,12 +412,11 @@ public class Main {
                     newOrder.addPayment(newImmediatePayment);
                 } else if (paymentType == 2) {
                     DelayedPayment newDelayedPayment = new DelayedPayment(partOfPay,activeWebUser.getCustomer().getAccount());
-                    //todo: check about DELAYED PAYMENT DATE
-//                    System.out.println("Please Enter the payment date in this format: <year(2 numbers)>,<month(0-11)>,<day(1-31)>");
-//                    String chosenDateStr = scanLine.nextLine();
-//                    String[] splitDate = chosenDateStr.split(",");
-//                    //TODO: CHECK ABOUT MONTHS - JANU ......
-                    Date date = new Date();
+                    System.out.println("Please Enter the payment date in this format: <year(4 numbers)>,<month(1-12)>,<day(1-31)>");
+                    String chosenDateStr = scanner.nextLine();
+                    String[] splitDate = chosenDateStr.split(",");
+                    Date date = new GregorianCalendar(Integer.parseInt(splitDate[0]), Integer.parseInt(splitDate[1]) - 1,
+                                                      Integer.parseInt(splitDate[2])).getTime();
                     newDelayedPayment.setPaymentDate(date);
                     newOrder.addPayment(newDelayedPayment);
                 }
@@ -390,7 +429,6 @@ public class Main {
 
     // created by Roy & Dana
     public static void showObject(String objectId){
-        //changed by lior
         Customer c = null;
         Account a = null;
         List<Payment> payments = new ArrayList<>();
@@ -441,52 +479,6 @@ public class Main {
 
         if(!ifExists)
             System.out.println("There is no object in the system with the current id.");
-
-
-
-//        for (String webUserId : webUsersList.keySet()) {
-//            WebUser curWebUser = webUsersList.get(webUserId);
-//            if(webUserId.equals(objectId)){
-//                curWebUser.showDetailsAndConnections();
-//            }
-//            else{
-//                Customer curCustomer = curWebUser.getCustomer();
-//                if(curWebUser.getCustomer().getId().equals(objectId)){
-//                    curCustomer.showDetailsAndConnections();
-//                }
-//                else{
-//                    Account curAccount = curCustomer.getAccount();
-//                    if(curAccount.getId().equals(objectId)){
-//                        curAccount.showDetailsAndConnections();
-//                    }
-//                    else{
-//                        for (Order curOrder : curAccount.getOrders()) {
-//                            if(curOrder.getNumber().equals(objectId)){
-//                                curOrder.showDetailsAndConnections();
-//                            }
-//                        }
-//                    }
-//                    for (Payment curPayment : curAccount.getPayments()) {
-//                        if(curPayment.getPaymentId().equals(objectId)){
-//                            curPayment.showDetailsAndConnections();
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//        for (String supplierID : suppliersList.keySet()) {
-//            Supplier curSupplier = suppliersList.get(supplierID);
-//            if(supplierID.equals(objectId)){
-//                curSupplier.showDetailsAndConnections();
-//            }
-//            else{
-//                for (Product curProduct : curSupplier.getProducts()) {
-//                    if(curProduct.getId().equals(objectId)){
-//                        curProduct.showDetailsAndConnections();
-//                    }
-//                }
-//            }
-//        }
     }
 
     public static void showAllObjects(){
@@ -504,43 +496,41 @@ public class Main {
             customers.add(curWebUser.getCustomer());
             shoppingCarts.add(curWebUser.getCustomer().getAccount().getShoppingCart());
         }
-        System.out.println("****** CUSTOMERS ******");
+        System.out.println("\n" + "****** CUSTOMERS ******");
         for (Customer customer:customers) {
             System.out.println("CUSTOMER: "+customer.getId());
         }
-        System.out.println("****** ACCOUNTS ******");
+        System.out.println("\n" + "****** ACCOUNTS ******");
         for (Account account:accounts) {
             System.out.println("ACCOUNT: "+account.getId());
         }
-        System.out.println("****** SHOPPING CARTS ******");
+        System.out.println("\n" + "****** SHOPPING CARTS ******");
         for (ShoppingCart sc:shoppingCarts) {
             System.out.println("SHOPPING CART of: "+sc.getWebUser().getLogin_id()+" Created: "+sc.getCreated());
 
         }
-        System.out.println("****** PRODUCTS ******");
+        System.out.println("\n" + "****** PRODUCTS ******");
         for (String productName : productsList.keySet()) {
             Product product = productsList.get(productName);
             System.out.println("PRODUCT: "+productName);
         }
-        System.out.println("****** SUPPLIERS ******");
+        System.out.println("\n" + "****** SUPPLIERS ******");
         for (String supplierName : suppliersList.keySet()) {
             Supplier supplier = suppliersList.get(supplierName);
             System.out.println("SUPPLIER: "+supplierName);
         }
-        System.out.println("****** ORDERS ******");
+        System.out.println("\n" + "****** ORDERS ******");
         for (Account a : accounts) {
             for (Order o:a.getOrders()) {
                 System.out.println("ORDER: "+o.getNumber());
             }
         }
-        System.out.println("****** PAYMENTS ******");
+        System.out.println("\n" +"****** PAYMENTS ******");
         for (Account a : accounts) {
             for (Payment p:a.getPayments()) {
                 System.out.println("PAYMENT: "+p.getPaymentId());
             }
         }
-
-
-
+        System.out.println();
     }
 }
