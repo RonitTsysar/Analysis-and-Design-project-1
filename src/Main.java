@@ -153,6 +153,7 @@ public class Main {
         }
         webUserToRemove.delete();
         webUsersList.remove(login_id);
+        System.out.println("Web User " + webUserToRemove.getLogin_id() + " has Successfully removed!");
     }
 
     private static void logoutWebUser(String login_id) {
@@ -304,7 +305,6 @@ public class Main {
 
     // Dana & Roy
     public static void makeOrder() {
-//        Scanner scanLine = new Scanner(System.in);
         if(activeWebUser == null){
             System.out.println("Please Login first");
             return;
@@ -321,6 +321,7 @@ public class Main {
             } else {
                 System.out.println("Seller with this ID Doesn't exist");
                 System.out.println("Sorry ! Please try again to Make new Order");
+                curAccount.removeOrder(newOrder);
                 return;
             }
         }
@@ -330,6 +331,7 @@ public class Main {
         if(sellerWebUser.getCustomer().getAccount().getProducts().size() < 1)
         {
             System.out.println("This Seller have no products to sell");
+            curAccount.removeOrder(newOrder);
             return;
         }
 
@@ -351,6 +353,7 @@ public class Main {
             }
             if (chosenProduct == null){
                 System.out.println("There is no such product, try again to make an order");
+                curAccount.removeOrder(newOrder);
                 return;
             }
 
@@ -379,6 +382,7 @@ public class Main {
         if(newOrder.getLineItems().size() < 1){
             System.out.print("Order Empty - ");
             System.out.println("Please try again");
+            curAccount.removeOrder(newOrder);
             return;
         }
         newOrder.setOrdered(new Date());
@@ -424,7 +428,7 @@ public class Main {
                 System.out.println("You choose too much money to pay dude...");
             }
         }
-
+        System.out.println("Thank you for shopping with us! Bye Bye...");
     }
 
     // created by Roy & Dana

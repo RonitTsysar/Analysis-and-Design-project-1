@@ -175,4 +175,11 @@ public class Account {
         if(newOrder != null)
             this.orders.add(newOrder);
     }
+
+    public void removeOrder(Order orderToRemove){
+        if(orderToRemove != null){
+            if(orders.remove(orderToRemove))
+                System.out.println("Order doesn't exist in this account orders list");
+        }
+    }
 }
