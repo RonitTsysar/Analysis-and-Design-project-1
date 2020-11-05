@@ -38,7 +38,9 @@ public class LineItem {
     public void setProduct(Product product) {
         if(product != null && this.product == null)
             this.product = product;
-        throw new RuntimeException("Couldn't connect lineItem to product");
+        else{
+            System.out.println("Couldn't connect lineItem to product");
+        }
     }
 
     public ShoppingCart getShoppingCart() {
@@ -48,7 +50,8 @@ public class LineItem {
     public void setShoppingCart(ShoppingCart shoppingCart) {
         if(shoppingCart != null && this.shoppingCart == null)
             this.shoppingCart = shoppingCart;
-        throw new RuntimeException("Couldn't connect lineItem to shoppingCart");
+        else
+            System.out.println("Couldn't connect lineItem to shoppingCart");
     }
 
     public Order getOrder() {
@@ -58,7 +61,8 @@ public class LineItem {
     public void setOrder(Order order) {
         if(order != null && this.order == null)
             this.order = order;
-        throw new RuntimeException("Couldn't connect lineItem to order");
+        else
+            System.out.println("Couldn't connect lineItem to order");
     }
 
     public void delete() {

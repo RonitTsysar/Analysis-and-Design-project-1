@@ -74,7 +74,6 @@ public class Main {
                             }
                             webUsersList.put(arg, addWebUser(arg));
                         } else if (type.equals("Product")) {
-                            System.out.println("Add Product");
                             addProduct();
                         }
                         break;
@@ -273,6 +272,7 @@ public class Main {
 
     // Dana & Roy
     public static void makeOrder() {
+        Scanner scanLine = new Scanner(System.in);
         if(activeWebUser == null){
             System.out.println("Please Login first");
             return;
@@ -298,20 +298,22 @@ public class Main {
             sellerWebUser.getCustomer().getAccount().displayProductsToSell();
 
         // choosing product
-        boolean finishOrder = false;
-        while (!finishOrder) {
-            System.out.println("Please type the product ID you want");
-            String productID = scanner.nextLine();
+        boolean orderInProc = true;
+        while (orderInProc) {
+            System.out.println("Please type the product name you want");
+            String productName = scanner.nextLine();
             assert sellerWebUser != null;
             List<Product> productsListFromSeller = sellerWebUser.getCustomer().getAccount().getProducts();
             Product chosenProduct = null;
             for (Product product : productsListFromSeller) {
-                if (product.getId().equals(productID)) {
+                if (product.getName().equals(productName)) {
                     chosenProduct = product;
                 }
             }
-            if (chosenProduct == null)
-                throw new RuntimeException("Product not found");
+            if (chosenProduct == null){
+                System.out.println("There is no such product");
+                break;
+            }
 
             System.out.println("Here are the options for this product: ");
             chosenProduct.showLineItems();
@@ -321,9 +323,10 @@ public class Main {
             curAccount.getShoppingCart().addLineItem(newItem);
             newOrder.addLineItem(newItem);
             System.out.println("Do you want to choose another product? y/n");
-            String answer = scanner.nextLine();
-            if (answer.equals("y")) {
-                finishOrder = true;
+
+            String answer = scanLine.nextLine();
+            if (answer.equals("n")) {
+                orderInProc = false;
             }
         }
         newOrder.setOrdered(new Date());
@@ -336,7 +339,7 @@ public class Main {
 
         // payment
         System.out.println("How do you want to pay -\nImmediate Payment/ Delayed Payment ?\nPlease enter 1-Immediate or 2-Delayed");
-        int paymentType = scanner.nextInt();
+        int paymentType = scanLine.nextInt();
 
         float totalToBePayed = newOrder.getTotal();
         while (totalToBePayed > 0) {
