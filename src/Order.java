@@ -74,7 +74,7 @@ public class Order {
             return false;
         this.lineItems.add(lineItem);
         lineItem.setOrder(this);
-        total += lineItem.getPrice() * lineItem.getQuantity();
+        total += lineItem.getPrice();
         return true;
     }
 
