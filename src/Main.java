@@ -316,11 +316,18 @@ public class Main {
             }
 
             System.out.println("Here are the options for this product: ");
-            chosenProduct.showLineItems();
+            if(!chosenProduct.showLineItems()){
+                orderInProc = false;
+                continue;
+            }
             System.out.println("Please press your choice number.");
             int chosenOption = parseInt(scanner.nextLine());
-
-            LineItem newItem = chosenProduct.getLineItemsList().get(chosenOption - 1);
+            LineItem newItem = null;
+            try{
+                newItem = chosenProduct.getLineItemsList().get(chosenOption - 1);
+            }catch (IndexOutOfBoundsException e){
+                System.out.println("No such Line Item");
+            }
             curAccount.getShoppingCart().addLineItem(newItem);
             newOrder.addLineItem(newItem);
             System.out.println("Do you want to choose another product? y/n");
@@ -329,6 +336,9 @@ public class Main {
             if (answer.equals("n")) {
                 orderInProc = false;
             }
+        }
+        if(newOrder.getLineItems().size() < 1){
+            System.out.println("Order Empty - ");
         }
         newOrder.setOrdered(new Date());
         String shippingAddress = curAccount.getBilling_address();
@@ -352,7 +362,7 @@ public class Main {
                 if (paymentType == 1) {
                     ImmediatePayment newImmediatePayment = new ImmediatePayment(partOfPay,activeWebUser.getCustomer().getAccount());
                     System.out.println("Do you want a phone confirmation ? y/n");
-                    String phoneCofirmAns = scanner.nextLine();
+                    String phoneCofirmAns = scanLine.nextLine();
                     boolean phoneConfirmation = false;
                     if (phoneCofirmAns.equals("y"))
                         phoneConfirmation = true;

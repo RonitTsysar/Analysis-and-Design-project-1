@@ -40,14 +40,17 @@ public class Product {
         return id;
     }
 
-    public void showLineItems(){
-        if(this.lineItemsList.size() < 1)
+    public boolean showLineItems(){
+        if(this.lineItemsList.size() < 1){
             System.out.println("No Line Items");
+            return false;
+        }
         else{
             for (LineItem lineItem : lineItemsList) {
                 System.out.println(lineItemsList.indexOf(lineItem)+1 + ". "  + "Quantity: " +lineItem.getQuantity() + " Price : " + lineItem.getPrice());
             }
         }
+        return true;
     }
 
     public void setId(String id) {
