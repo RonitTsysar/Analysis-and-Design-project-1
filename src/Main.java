@@ -316,7 +316,8 @@ public class Main {
             System.out.println("Here are the options for this product: ");
             chosenProduct.showLineItems();
             System.out.println("Please press your choice number.");
-            int chosenOption = scanner.nextInt();
+            int chosenOption = parseInt(scanner.nextLine());
+
             LineItem newItem = chosenProduct.getLineItemsList().get(chosenOption - 1);
             curAccount.getShoppingCart().addLineItem(newItem);
             newOrder.addLineItem(newItem);
