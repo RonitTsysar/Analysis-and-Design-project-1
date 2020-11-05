@@ -311,15 +311,23 @@ public class Main {
                 }
             }
             if (chosenProduct == null){
-                System.out.println("There is no such product");
-                break;
+                System.out.println("There is no such product, try again to make an order");
+                return;
             }
 
             System.out.println("Here are the options for this product: ");
-            chosenProduct.showLineItems();
+            if(!chosenProduct.showLineItems()){
+                orderInProc = false;
+                continue;
+            }
             System.out.println("Please press your choice number.");
-            int chosenOption = scanner.nextInt();
-            LineItem newItem = chosenProduct.getLineItemsList().get(chosenOption - 1);
+            int chosenOption = parseInt(scanner.nextLine());
+            LineItem newItem = null;
+            try{
+                newItem = chosenProduct.getLineItemsList().get(chosenOption - 1);
+            }catch (IndexOutOfBoundsException e){
+                System.out.println("No such Line Item");
+            }
             curAccount.getShoppingCart().addLineItem(newItem);
             newOrder.addLineItem(newItem);
             System.out.println("Do you want to choose another product? y/n");
@@ -328,6 +336,9 @@ public class Main {
             if (answer.equals("n")) {
                 orderInProc = false;
             }
+        }
+        if(newOrder.getLineItems().size() < 1){
+            System.out.println("Order Empty - ");
         }
         newOrder.setOrdered(new Date());
         String shippingAddress = curAccount.getBilling_address();
@@ -344,14 +355,14 @@ public class Main {
         float totalToBePayed = newOrder.getTotal();
         while (totalToBePayed > 0) {
             System.out.println("Please Enter the sum you want to pay from the total of: " + totalToBePayed);
-            int partOfPay = scanner.nextInt();
+            int partOfPay = scanLine.nextInt();
             if (partOfPay <= newOrder.getTotal()) {
                 totalToBePayed -= partOfPay;
 
                 if (paymentType == 1) {
                     ImmediatePayment newImmediatePayment = new ImmediatePayment(partOfPay,activeWebUser.getCustomer().getAccount());
                     System.out.println("Do you want a phone confirmation ? y/n");
-                    String phoneCofirmAns = scanner.nextLine();
+                    String phoneCofirmAns = scanLine.nextLine();
                     boolean phoneConfirmation = false;
                     if (phoneCofirmAns.equals("y"))
                         phoneConfirmation = true;
@@ -360,7 +371,7 @@ public class Main {
                 } else if (paymentType == 2) {
                     DelayedPayment newDelayedPayment = new DelayedPayment(partOfPay,activeWebUser.getCustomer().getAccount());
                     System.out.println("Please Enter the payment date in this format: <year(2 numbers)>,<month(0-11)>,<day(1-31)>");
-                    String chosenDateStr = scanner.nextLine();
+                    String chosenDateStr = scanLine.nextLine();
                     String[] splitDate = chosenDateStr.split(",");
                     //TODO: CHECK ABOUT MONTHS - JANU ......
                     Date date = new Date();
