@@ -369,10 +369,11 @@ public class Main {
                     newOrder.addPayment(newImmediatePayment);
                 } else if (paymentType == 2) {
                     DelayedPayment newDelayedPayment = new DelayedPayment(partOfPay,activeWebUser.getCustomer().getAccount());
-                    System.out.println("Please Enter the payment date in this format: <year(2 numbers)>,<month(0-11)>,<day(1-31)>");
-                    String chosenDateStr = scanLine.nextLine();
-                    String[] splitDate = chosenDateStr.split(",");
-                    //TODO: CHECK ABOUT MONTHS - JANU ......
+                    //todo: check about DELAYED PAYMENT DATE
+//                    System.out.println("Please Enter the payment date in this format: <year(2 numbers)>,<month(0-11)>,<day(1-31)>");
+//                    String chosenDateStr = scanLine.nextLine();
+//                    String[] splitDate = chosenDateStr.split(",");
+//                    //TODO: CHECK ABOUT MONTHS - JANU ......
                     Date date = new Date();
                     newDelayedPayment.setPaymentDate(date);
                     newOrder.addPayment(newDelayedPayment);
