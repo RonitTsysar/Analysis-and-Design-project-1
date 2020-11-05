@@ -170,4 +170,9 @@ public class Account {
         }
         return paymentsIds;
     }
+
+    public void addOrder(Order newOrder) {
+        if(newOrder != null)
+            this.orders.add(newOrder);
+    }
 }

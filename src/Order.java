@@ -138,4 +138,18 @@ public class Order {
         }
         return true;
     }
+
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "number='" + number + '\'' +
+                ", ordered=" + ordered +
+                ", shipped=" + shipped +
+                ", ship_to=" + ship_to +
+                ", status=" + status +
+                ", total=" + total +
+                ", account=" + account +
+                '}';
+    }
 }

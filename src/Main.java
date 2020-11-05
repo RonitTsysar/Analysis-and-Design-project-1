@@ -343,10 +343,9 @@ public class Main {
         newOrder.setOrdered(new Date());
         String shippingAddress = curAccount.getBilling_address();
         newOrder.setShip_to(new Address(shippingAddress));
-        activeWebUser.getCustomer().getAccount().setLastOrder(newOrder);
+        curAccount.addOrder(newOrder);
+        curAccount.setLastOrder(newOrder);
         System.out.println("Order Created");
-
-
 
         // payment
         System.out.println("How do you want to pay -\nImmediate Payment/ Delayed Payment ?\nPlease enter 1-Immediate or 2-Delayed");
@@ -362,7 +361,7 @@ public class Main {
                 if (paymentType == 1) {
                     ImmediatePayment newImmediatePayment = new ImmediatePayment(partOfPay,activeWebUser.getCustomer().getAccount());
                     System.out.println("Do you want a phone confirmation ? y/n");
-                    String phoneCofirmAns = scanLine.nextLine();
+                    String phoneCofirmAns = scanner.nextLine();
                     boolean phoneConfirmation = false;
                     if (phoneCofirmAns.equals("y"))
                         phoneConfirmation = true;
@@ -382,6 +381,7 @@ public class Main {
                 System.out.println("You choose too much money to pay dude...");
             }
         }
+
     }
 
     // created by Roy & Dana
