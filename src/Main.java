@@ -166,11 +166,12 @@ public class Main {
         if (activeWebUser.equals(userToLogout)) {
             activeWebUser = null;
             userToLogout.setState(UserState.Blocked);//i assume Blocked=LoggedOut
-        } else {
+            System.out.println("Web User Logged Out Successfully!");
+        }
+        else {
             System.out.println("WebUser with id: " + login_id + " is not currently logged in");
             System.out.println("WebUser logged in id is: " + activeWebUser.getLogin_id());
         }
-        System.out.println("Web User Logged Out Successfully!");
     }
 
     private static void loginWebUser(String login_id) {
@@ -387,36 +388,56 @@ public class Main {
     // created by Roy & Dana
     public static void showObject(String objectId){
         //changed by lior
-        Customer c=null;
-        Account a=null;
-//        ShoppingCart sc=null;
-        List<Payment> payments=new ArrayList<>();
-        List<Order> orders=new ArrayList<>();
+        Customer c = null;
+        Account a = null;
+        List<Payment> payments = new ArrayList<>();
+        List<Order> orders = new ArrayList<>();
+        boolean ifExists = false;
 
         Product prod = productsList.get(objectId);
-        Supplier s=suppliersList.get(objectId);
+        Supplier s = suppliersList.get(objectId);
         WebUser wu = webUsersList.get(objectId);
+
         if(wu != null){
             wu.showDetailsAndConnections();
-            c=wu.getCustomer();
-            a=c.getAccount();
-            payments=a.getPayments();
-            orders=a.getOrders();
+            c = wu.getCustomer();
+            a = c.getAccount();
+            payments = a.getPayments();
+            orders = a.getOrders();
+            ifExists = true;
         }
-        if(c != null && c.getId().equals(objectId))
+        if(c != null && c.getId().equals(objectId)) {
             c.showDetailsAndConnections();
-        if(a != null && a.getId().equals(objectId))
+            ifExists = true;
+        }
+
+        if(a != null && a.getId().equals(objectId)) {
             a.showDetailsAndConnections();
-        if(prod != null) prod.showDetailsAndConnections();
-        if(s != null) s.showDetailsAndConnections();
-        for (Payment payment:payments) {
+            ifExists = true;
+        }
+
+        if(prod != null){
+            prod.showDetailsAndConnections();
+            ifExists = true;
+        }
+        if(s != null){
+            s.showDetailsAndConnections();
+            ifExists = true;
+        }
+
+        for (Payment payment:payments){
             if(payment.getPaymentId().equals(objectId))
                 payment.showDetailsAndConnections();
+                ifExists = true;
         }
         for (Order order:orders) {
             if(order.getNumber().equals(objectId))
                 order.showDetailsAndConnections();
+                ifExists = true;
         }
+
+        if(!ifExists)
+            System.out.println("There is no object in the system with the current id.");
 
 
 

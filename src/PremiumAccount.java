@@ -67,10 +67,10 @@ public class PremiumAccount extends Account {
     private String getProductsNameList() {
         String productsIds="";
         if(products == null) return "product list empty";
-        for (Product product:products) {
-            productsIds += product.getName()+"\n";
+        for (Product product : products) {
+            productsIds += product.getName()+", ";
         }
-        return productsIds;
+        return productsIds.substring(0, productsIds.length() - 2);
     }
 
     public boolean removeProduct(Product productToRemove) {
