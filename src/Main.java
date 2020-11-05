@@ -339,6 +339,8 @@ public class Main {
         }
         if(newOrder.getLineItems().size() < 1){
             System.out.println("Order Empty - ");
+            System.out.println("Please try again");
+            return;
         }
         newOrder.setOrdered(new Date());
         String shippingAddress = curAccount.getBilling_address();
