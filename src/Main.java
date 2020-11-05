@@ -311,8 +311,8 @@ public class Main {
                 }
             }
             if (chosenProduct == null){
-                System.out.println("There is no such product");
-                break;
+                System.out.println("There is no such product, try again to make an order");
+                return;
             }
 
             System.out.println("Here are the options for this product: ");
@@ -355,7 +355,7 @@ public class Main {
         float totalToBePayed = newOrder.getTotal();
         while (totalToBePayed > 0) {
             System.out.println("Please Enter the sum you want to pay from the total of: " + totalToBePayed);
-            int partOfPay = scanner.nextInt();
+            int partOfPay = scanLine.nextInt();
             if (partOfPay <= newOrder.getTotal()) {
                 totalToBePayed -= partOfPay;
 
@@ -371,7 +371,7 @@ public class Main {
                 } else if (paymentType == 2) {
                     DelayedPayment newDelayedPayment = new DelayedPayment(partOfPay,activeWebUser.getCustomer().getAccount());
                     System.out.println("Please Enter the payment date in this format: <year(2 numbers)>,<month(0-11)>,<day(1-31)>");
-                    String chosenDateStr = scanner.nextLine();
+                    String chosenDateStr = scanLine.nextLine();
                     String[] splitDate = chosenDateStr.split(",");
                     //TODO: CHECK ABOUT MONTHS - JANU ......
                     Date date = new Date();
